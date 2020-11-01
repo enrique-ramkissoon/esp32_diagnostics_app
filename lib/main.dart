@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:esp32_diagnostics_app/RouteGen.dart';
+import 'package:flutter_blue/flutter_blue.dart';
 
 void main() {
   runApp(DiagnosticsApp());
@@ -18,6 +19,10 @@ class DiagnosticsApp extends StatelessWidget {
 }
 
 class HomeRoute extends StatefulWidget{
+
+  static final FlutterBlue flutterBlue = FlutterBlue.instance;
+
+
   @override
   HomeRouteState createState(){
     return(HomeRouteState());
@@ -25,6 +30,12 @@ class HomeRoute extends StatefulWidget{
 }
 
 class HomeRouteState extends State<HomeRoute>{
+
+  static BluetoothDevice connectedDevice;
+
+  String connectButtonDisplay = 'Connect';
+  String connectButtonDisplayDevice = 'placeholder';
+
   @override
   Widget build(BuildContext context){
     return Scaffold(
@@ -38,12 +49,31 @@ class HomeRouteState extends State<HomeRoute>{
             RaisedButton(
               child: Text('ADC Graph'),
               onPressed: (){
-                Navigator.of(context).pushNamed('/adc',arguments: null);
+                Navigator.of(context).pushNamed('/adc',arguments: 'ADC Click');
               }
             ),
+
+            Spacer(),
+
+            RaisedButton(
+              child: Column(
+                children: <Widget>[
+                  Text('$connectButtonDisplay'),
+                  Text('$connectButtonDisplayDevice',style: TextStyle(fontSize: 10))
+                ]
+              ),
+
+              onPressed: (){
+                Navigator.of(context).pushNamed('/connect',arguments: this.setConnectionInfo);
+              }
+            )
           ]
         )
       )
     );
+  }
+
+  void setConnectionInfo(){
+
   }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:esp32_diagnostics_app/main.dart';
 import 'package:esp32_diagnostics_app/AdcRoute.dart';
+import 'package:esp32_diagnostics_app/ConnectRoute.dart';
+
 
 class RouteGen{
   static Route<dynamic> generate(RouteSettings settings){
@@ -11,6 +13,8 @@ class RouteGen{
         return MaterialPageRoute(builder: (_)=>HomeRoute());
       case '/adc':
         return MaterialPageRoute(builder: (_)=>AdcRoute(data: args));
+      case '/connect':
+        return MaterialPageRoute(builder: (_)=>ConnectRoute(setConnectedFunction: args));
       default:
         return errorRoute();
     }
