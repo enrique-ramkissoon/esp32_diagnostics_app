@@ -3,6 +3,7 @@ import 'package:esp32_diagnostics_app/main.dart';
 
 class ConnectRoute extends StatefulWidget{
   Function setConnectedFunction;
+
   ConnectRoute({Key key,@required this.setConnectedFunction}) :super(key: key);
 
   @override
@@ -22,7 +23,7 @@ class ConnectRouteState extends State<ConnectRoute>{
           child: RaisedButton(
             child: Text('Scan and Connect to ESP (temporary)'),
             onPressed: (){
-              
+              this.widget.setConnectedFunction('hELLO');
             }
           )
         )

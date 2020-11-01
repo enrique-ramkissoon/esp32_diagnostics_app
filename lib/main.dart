@@ -59,7 +59,7 @@ class HomeRouteState extends State<HomeRoute>{
               child: Column(
                 children: <Widget>[
                   Text('$connectButtonDisplay'),
-                  Text('$connectButtonDisplayDevice',style: TextStyle(fontSize: 10))
+                  Text('$connectButtonDisplayDevice',style: TextStyle(fontSize: 9))
                 ]
               ),
 
@@ -73,7 +73,7 @@ class HomeRouteState extends State<HomeRoute>{
     );
   }
 
-  void setConnectionInfo(){
-
+  void setConnectionInfo(String x){
+    print('Working! ' + x);
   }
 }
