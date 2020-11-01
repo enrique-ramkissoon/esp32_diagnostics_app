@@ -31,7 +31,7 @@ class HomeRoute extends StatefulWidget{
 
 class HomeRouteState extends State<HomeRoute>{
 
-  static BluetoothDevice connectedDevice;
+  BluetoothDevice connectedDevice;
 
   String connectButtonDisplay = 'Connect';
   String connectButtonDisplayDevice = 'placeholder';
@@ -73,7 +73,11 @@ class HomeRouteState extends State<HomeRoute>{
     );
   }
 
-  void setConnectionInfo(String x){
-    print('Working! ' + x);
+  void setConnectionInfo(BluetoothDevice x){
+    setState((){
+      connectedDevice = x;
+      connectButtonDisplay = 'Connected';
+      connectButtonDisplayDevice = connectedDevice.name;
+    });
   }
 }
