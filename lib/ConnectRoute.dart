@@ -110,6 +110,8 @@ class ConnectRouteState extends State<ConnectRoute>{
       }
     }
 
+    this.widget.arg.setCharacteristicsFunction(r,w);
+
     return;
   }
 }
