@@ -33,9 +33,11 @@ class HomeRouteState extends State<HomeRoute>{
 
   BluetoothDevice connectedDevice;
   BluetoothService customService;
+  BluetoothCharacteristic readChar;
+  BluetoothCharacteristic writeChar;
 
   String connectButtonDisplay = 'Connect';
-  String connectButtonDisplayDevice = 'placeholder';
+  String connectButtonDisplayDevice = '';
 
   @override
   Widget build(BuildContext context){
@@ -65,7 +67,7 @@ class HomeRouteState extends State<HomeRoute>{
               ),
 
               onPressed: (){
-                Navigator.of(context).pushNamed('/connect',arguments: ConnectRouteArgs(setConnectionInfo,setConnectionService));
+                Navigator.of(context).pushNamed('/connect',arguments: ConnectRouteArgs(setConnectionInfo,setConnectionService,setConnectionChars));
               }
             )
           ]
@@ -87,6 +89,13 @@ class HomeRouteState extends State<HomeRoute>{
       customService = x;
     });
   }
+
+  void setConnectionChars(BluetoothCharacteristic r,BluetoothCharacteristic w){
+    setState((){
+      readChar = r;
+      writeChar = w;
+    });
+  }
 }
 
 //callback functions to main route to be used by connect route
@@ -94,9 +103,11 @@ class HomeRouteState extends State<HomeRoute>{
 class ConnectRouteArgs{
   Function setConnectionFunction;
   Function setServiceFunction;
+  Function setCharacteristicsFunction;
 
-  ConnectRouteArgs(Function connect,Function service){
+  ConnectRouteArgs(Function connect,Function service,Function characteristic){
     setConnectionFunction = connect;
     setServiceFunction = service;
+    setCharacteristicsFunction = characteristic;
   }
 }

@@ -15,6 +15,7 @@ class ConnectRoute extends StatefulWidget{
 class ConnectRouteState extends State<ConnectRoute>{
 
   BluetoothDevice espDevice;
+  BluetoothService serv;
 
   @override
   Widget build(BuildContext context){
@@ -38,8 +39,9 @@ class ConnectRouteState extends State<ConnectRoute>{
                 child: Text('Connect to esp (temporary)'),
                 onPressed: () async{
                   await bleConnect();
-                  bleGetService();
-                  
+                  await bleGetService();
+                  await bleGetCharacteristics();
+                  Navigator.of(context).pop();
                   //bleGetService();
                 }
               )
@@ -75,14 +77,39 @@ class ConnectRouteState extends State<ConnectRoute>{
     return ret;
   }
 
-  void bleGetService() async{
+  Future<void> bleGetService() async{
 
     List<BluetoothService> services = await this.espDevice.discoverServices();
     services.forEach((service){
       if(service.uuid.toString() == 'c6f2d9e3-49e7-4125-9014-bfc6d669ff00'){
         print('Service UUID found');
         this.widget.arg.setServiceFunction(service);
+        serv = service;
       }
     });
+
+    return;
+  }
+
+  Future<void> bleGetCharacteristics() async{
+    var characteristics = serv.characteristics;
+
+    BluetoothCharacteristic r;
+    BluetoothCharacteristic w;
+
+    for(BluetoothCharacteristic c in characteristics) {
+      if(c.uuid.toString() == 'c6f2d9e3-49e7-4125-9014-bfc6d669ff01'){
+        r = c;
+        //List<int> value = await c.read();
+        //print(value);
+        print('Set read char');
+      }
+      if(c.uuid.toString() == 'c6f2d9e3-49e7-4125-9014-bfc6d669ff02'){
+        w = c;
+        print('Set write char');
+      }
+    }
+
+    return;
   }
 }
