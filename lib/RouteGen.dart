@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:esp32_diagnostics_app/main.dart';
+import 'package:esp32_diagnostics_app/AdcRoute.dart';
 
 class RouteGen{
   static Route<dynamic> generate(RouteSettings settings){
-    //final args = settings.arguments;
+    final args = settings.arguments;
 
     switch(settings.name){
       case '/':
         return MaterialPageRoute(builder: (_)=>HomeRoute());
+      case '/adc':
+        return MaterialPageRoute(builder: (_)=>AdcRoute(data: args));
       default:
         return errorRoute();
     }

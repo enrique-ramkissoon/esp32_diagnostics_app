@@ -35,7 +35,12 @@ class HomeRouteState extends State<HomeRoute>{
       body: Center(
         child: Column(
           children: <Widget>[
-            RaisedButton(child: Text('ADC Graph'),onPressed: (){})
+            RaisedButton(
+              child: Text('ADC Graph'),
+              onPressed: (){
+                Navigator.of(context).pushNamed('/adc',arguments: null);
+              }
+            ),
           ]
         )
       )
