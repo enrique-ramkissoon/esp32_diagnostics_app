@@ -14,7 +14,7 @@ class RouteGen{
       case '/adc':
         return MaterialPageRoute(builder: (_)=>AdcRoute(data: args));
       case '/connect':
-        return MaterialPageRoute(builder: (_)=>ConnectRoute(setConnectedFunction: args));
+        return MaterialPageRoute(builder: (_)=>ConnectRoute(arg: args));
       default:
         return errorRoute();
     }

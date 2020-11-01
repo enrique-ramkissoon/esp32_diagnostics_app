@@ -32,6 +32,7 @@ class HomeRoute extends StatefulWidget{
 class HomeRouteState extends State<HomeRoute>{
 
   BluetoothDevice connectedDevice;
+  BluetoothService customService;
 
   String connectButtonDisplay = 'Connect';
   String connectButtonDisplayDevice = 'placeholder';
@@ -64,7 +65,7 @@ class HomeRouteState extends State<HomeRoute>{
               ),
 
               onPressed: (){
-                Navigator.of(context).pushNamed('/connect',arguments: this.setConnectionInfo);
+                Navigator.of(context).pushNamed('/connect',arguments: ConnectRouteArgs(setConnectionInfo,setConnectionService));
               }
             )
           ]
@@ -79,5 +80,23 @@ class HomeRouteState extends State<HomeRoute>{
       connectButtonDisplay = 'Connected';
       connectButtonDisplayDevice = connectedDevice.name;
     });
+  }
+
+  void setConnectionService(BluetoothService x){
+    setState((){
+      customService = x;
+    });
+  }
+}
+
+//callback functions to main route to be used by connect route
+//An instance of this class should be passed as an argument to the connect route
+class ConnectRouteArgs{
+  Function setConnectionFunction;
+  Function setServiceFunction;
+
+  ConnectRouteArgs(Function connect,Function service){
+    setConnectionFunction = connect;
+    setServiceFunction = service;
   }
 }
