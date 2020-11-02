@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
+import 'package:charts_flutter/flutter.dart' as charts;
 
 class AdcRoute extends StatefulWidget{
 
@@ -26,13 +27,14 @@ class AdcRouteState extends State<AdcRoute>{
           child: Column(
             children: <Widget>[
               Text(lastReading),
-              FlatButton(child: Text('ReadChar'), onPressed: () async{
+              RaisedButton(child: Text('Start Graphing'), onPressed: () async{
                 
-                List<int> reading = await this.widget.readChar.read();
-
-                setState((){
-                  lastReading = new String.fromCharCodes(reading);
-                });
+                while(true){
+                  List<int> reading = await this.widget.readChar.read();
+                  setState((){
+                    lastReading = new String.fromCharCodes(reading);
+                  });
+                }
               })
             ]
           )
