@@ -45,6 +45,18 @@ class AdcRouteState extends State<AdcRoute>{
     ];
   }
 
+  List<charts.Series<AdcDatum, int>> updateGraphSeries(){
+    return [
+      new charts.Series<AdcDatum, int>(
+        id: 'Sales',
+        colorFn: (_, __) => charts.MaterialPalette.gray.shadeDefault,
+        domainFn: (AdcDatum reading, _) => reading.id,
+        measureFn: (AdcDatum reading, _) => reading.value,
+        data: values,
+      )
+    ];
+  }
+
   // factory AdcRouteState.withSampleData() {
   //   return new AdcRouteState(
   //     _createSampleData(),
@@ -82,21 +94,26 @@ class AdcRouteState extends State<AdcRoute>{
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Text(lastReading),
-              RaisedButton(child: Text('Start Graphing'), onPressed: () async{
+              RaisedButton(child: Text('Start Graphing'), onPressed: () {
                 
                 //while(true){
-                  //List<int> reading = await this.widget.readChar.read();
+                  //List<int> reading = this.widget.readChar.read();
                   //String readingStr = new String.fromCharCodes(reading);
-                  setState((){
-                    //lastReading = readingStr;
-                    ////int readingInt = int.parse(readingStr);
+                  //print(readingStr.length);
 
-                    //Dequeue first term and queue this reading
-                    for(int i=0;i<=8;i++){
-                      values[i] = values[i+1];
-                      values[i].id = i;
-                    }
-                    values[9] = new AdcDatum(9, Random().nextInt(2000));
+                  //lastReading = readingStr;
+                  ////int readingInt = int.parse(readingStr);
+                  ////int readingInt = int.parse(readingStr);
+
+                  //Dequeue first term and queue this reading
+                  for(int i=0;i<=8;i++){
+                    values[i] = values[i+1];
+                    values[i].id = i;
+                  }
+
+                  setState((){
+                    values[9] = new AdcDatum(9,Random().nextInt(20));
+                    graphSeries = updateGraphSeries();
                   });
                 //}
               }),
@@ -118,7 +135,7 @@ class AdcRouteState extends State<AdcRoute>{
 
 class AdcDatum{
   int id;
-  final int value;
+  int value;
 
   AdcDatum(this.id,this.value);
 }
