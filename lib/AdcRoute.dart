@@ -94,16 +94,18 @@ class AdcRouteState extends State<AdcRoute>{
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Text(lastReading),
-              RaisedButton(child: Text('Start Graphing'), onPressed: () {
+              RaisedButton(child: Text('Start Graphing'), onPressed: () async {
                 
-                //while(true){
-                  //List<int> reading = this.widget.readChar.read();
-                  //String readingStr = new String.fromCharCodes(reading);
-                  //print(readingStr.length);
+                while(true){
+                  List<int> reading = await this.widget.readChar.read();
+                  String readingStr = new String.fromCharCodes(reading);
 
-                  //lastReading = readingStr;
-                  ////int readingInt = int.parse(readingStr);
-                  ////int readingInt = int.parse(readingStr);
+                  String fixedStr = readingStr.substring(0,readingStr.indexOf(String.fromCharCode(0)));
+
+                  //print(fixedStr.length);
+
+                  int readingInt = int.parse(fixedStr);
+                  //int readingInt = int.parse(readingStr);
 
                   //Dequeue first term and queue this reading
                   for(int i=0;i<=8;i++){
@@ -112,16 +114,17 @@ class AdcRouteState extends State<AdcRoute>{
                   }
 
                   setState((){
-                    values[9] = new AdcDatum(9,Random().nextInt(20));
+                    lastReading = fixedStr;
+                    values[9] = new AdcDatum(9,readingInt);
                     graphSeries = updateGraphSeries();
                   });
-                //}
+                }
               }),
 
               Expanded( 
                   child: charts.LineChart(
                     graphSeries,
-                    animate: true
+                    animate: false
                   )
               )
 
