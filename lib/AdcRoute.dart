@@ -55,6 +55,8 @@ class AdcRouteState extends State<AdcRoute>{
 
         body: Center(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Text(lastReading),
               RaisedButton(child: Text('Start Graphing'), onPressed: () async{
@@ -67,16 +69,13 @@ class AdcRouteState extends State<AdcRoute>{
                 }
               }),
 
-              Container(
-                child: charts.LineChart(
-                  graphSeries,
-                  animate: false
-                ),
-
-                height: 900
-
-
+              Expanded( 
+                  child: charts.LineChart(
+                    graphSeries,
+                    animate: false
+                  )
               )
+
             ]
           )
         )
