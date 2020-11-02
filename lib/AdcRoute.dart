@@ -22,7 +22,7 @@ class AdcRouteState extends State<AdcRoute>{
   List<charts.Series<AdcDatum, int>> graphSeries;
   bool animate;
 
-  List<AdcDatum> values = new List(10);
+  List<AdcDatum> values = new List(50);
 
   AdcRouteState(){
     graphSeries = createListData();
@@ -30,13 +30,13 @@ class AdcRouteState extends State<AdcRoute>{
 
   List<charts.Series<AdcDatum, int>> createListData(){
 
-    for(int i=0;i<=9;i++){
+    for(int i=0;i<=49;i++){
       values[i] = new AdcDatum(i,0);
     }
 
     return [
       new charts.Series<AdcDatum, int>(
-        id: 'Sales',
+        id: 'ID',
         colorFn: (_, __) => charts.MaterialPalette.gray.shadeDefault,
         domainFn: (AdcDatum reading, _) => reading.id,
         measureFn: (AdcDatum reading, _) => reading.value,
@@ -48,7 +48,7 @@ class AdcRouteState extends State<AdcRoute>{
   List<charts.Series<AdcDatum, int>> updateGraphSeries(){
     return [
       new charts.Series<AdcDatum, int>(
-        id: 'Sales',
+        id: 'ID',
         colorFn: (_, __) => charts.MaterialPalette.gray.shadeDefault,
         domainFn: (AdcDatum reading, _) => reading.id,
         measureFn: (AdcDatum reading, _) => reading.value,
@@ -108,14 +108,14 @@ class AdcRouteState extends State<AdcRoute>{
                   //int readingInt = int.parse(readingStr);
 
                   //Dequeue first term and queue this reading
-                  for(int i=0;i<=8;i++){
+                  for(int i=0;i<=48;i++){
                     values[i] = values[i+1];
                     values[i].id = i;
                   }
 
                   setState((){
                     lastReading = fixedStr;
-                    values[9] = new AdcDatum(9,readingInt);
+                    values[49] = new AdcDatum(49,readingInt);
                     graphSeries = updateGraphSeries();
                   });
                 }
