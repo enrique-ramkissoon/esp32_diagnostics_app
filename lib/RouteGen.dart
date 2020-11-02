@@ -12,7 +12,7 @@ class RouteGen{
       case '/':
         return MaterialPageRoute(builder: (_)=>HomeRoute());
       case '/adc':
-        return MaterialPageRoute(builder: (_)=>AdcRoute(data: args));
+        return MaterialPageRoute(builder: (_)=>AdcRoute(readChar: args));
       case '/connect':
         return MaterialPageRoute(builder: (_)=>ConnectRoute(arg: args));
       default:

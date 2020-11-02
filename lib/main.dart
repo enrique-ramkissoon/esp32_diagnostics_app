@@ -52,7 +52,7 @@ class HomeRouteState extends State<HomeRoute>{
             RaisedButton(
               child: Text('ADC Graph'),
               onPressed: (){
-                Navigator.of(context).pushNamed('/adc',arguments: 'ADC Click');
+                Navigator.of(context).pushNamed('/adc',arguments: readChar);
               }
             ),
 
