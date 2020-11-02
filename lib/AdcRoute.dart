@@ -10,13 +10,43 @@ class AdcRoute extends StatefulWidget{
 
   @override
   AdcRouteState createState(){
-    return AdcRouteState();
+    return AdcRouteState.withSampleData();
   } 
 }
 
 class AdcRouteState extends State<AdcRoute>{
 
   String lastReading = '';
+  List<charts.Series> graphSeries;
+  bool animate;
+
+  AdcRouteState(this.graphSeries,this.animate);
+
+  factory AdcRouteState.withSampleData() {
+    return new AdcRouteState(
+      _createSampleData(),
+      false
+    );
+  }
+
+  static List<charts.Series<AdcDatum, int>> _createSampleData() {
+    final data = [
+      new AdcDatum(0, 5),
+      new AdcDatum(1, 25),
+      new AdcDatum(2, 100),
+      new AdcDatum(3, 75),
+    ];
+
+    return [
+      new charts.Series<AdcDatum, int>(
+        id: 'Sales',
+        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+        domainFn: (AdcDatum reading, _) => reading.id,
+        measureFn: (AdcDatum reading, _) => reading.value,
+        data: data,
+      )
+    ];
+  }
 
   Widget build(BuildContext context){
     return(
@@ -35,11 +65,29 @@ class AdcRouteState extends State<AdcRoute>{
                     lastReading = new String.fromCharCodes(reading);
                   });
                 }
-              })
+              }),
+
+              Container(
+                child: charts.LineChart(
+                  graphSeries,
+                  animate: false
+                ),
+
+                height: 900
+
+
+              )
             ]
           )
         )
       )
     );
   }
+}
+
+class AdcDatum{
+  final int id;
+  final int value;
+
+  AdcDatum(this.id,this.value);
 }
