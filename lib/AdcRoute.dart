@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
@@ -20,18 +22,18 @@ class AdcRouteState extends State<AdcRoute>{
   List<charts.Series<AdcDatum, int>> graphSeries;
   bool animate;
 
-  List<AdcDatum> values = [
-    new AdcDatum(0, 5),
-    new AdcDatum(1, 25),
-    new AdcDatum(2, 0),
-    new AdcDatum(3, 75),
-  ];
+  List<AdcDatum> values = new List(10);
 
   AdcRouteState(){
     graphSeries = createListData();
   }
 
   List<charts.Series<AdcDatum, int>> createListData(){
+
+    for(int i=0;i<=9;i++){
+      values[i] = new AdcDatum(i,0);
+    }
+
     return [
       new charts.Series<AdcDatum, int>(
         id: 'Sales',
@@ -82,18 +84,27 @@ class AdcRouteState extends State<AdcRoute>{
               Text(lastReading),
               RaisedButton(child: Text('Start Graphing'), onPressed: () async{
                 
-                while(true){
-                  List<int> reading = await this.widget.readChar.read();
+                //while(true){
+                  //List<int> reading = await this.widget.readChar.read();
+                  //String readingStr = new String.fromCharCodes(reading);
                   setState((){
-                    lastReading = new String.fromCharCodes(reading);
+                    //lastReading = readingStr;
+                    ////int readingInt = int.parse(readingStr);
+
+                    //Dequeue first term and queue this reading
+                    for(int i=0;i<=8;i++){
+                      values[i] = values[i+1];
+                      values[i].id = i;
+                    }
+                    values[9] = new AdcDatum(9, Random().nextInt(2000));
                   });
-                }
+                //}
               }),
 
               Expanded( 
                   child: charts.LineChart(
                     graphSeries,
-                    animate: false
+                    animate: true
                   )
               )
 
@@ -106,7 +117,7 @@ class AdcRouteState extends State<AdcRoute>{
 }
 
 class AdcDatum{
-  final int id;
+  int id;
   final int value;
 
   AdcDatum(this.id,this.value);
