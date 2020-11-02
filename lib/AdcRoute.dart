@@ -10,43 +10,64 @@ class AdcRoute extends StatefulWidget{
 
   @override
   AdcRouteState createState(){
-    return AdcRouteState.withSampleData();
+    return AdcRouteState();
   } 
 }
 
 class AdcRouteState extends State<AdcRoute>{
 
   String lastReading = '';
-  List<charts.Series> graphSeries;
+  List<charts.Series<AdcDatum, int>> graphSeries;
   bool animate;
 
-  AdcRouteState(this.graphSeries,this.animate);
+  List<AdcDatum> values = [
+    new AdcDatum(0, 5),
+    new AdcDatum(1, 25),
+    new AdcDatum(2, 0),
+    new AdcDatum(3, 75),
+  ];
 
-  factory AdcRouteState.withSampleData() {
-    return new AdcRouteState(
-      _createSampleData(),
-      false
-    );
+  AdcRouteState(){
+    graphSeries = createListData();
   }
 
-  static List<charts.Series<AdcDatum, int>> _createSampleData() {
-    final data = [
-      new AdcDatum(0, 5),
-      new AdcDatum(1, 25),
-      new AdcDatum(2, 100),
-      new AdcDatum(3, 75),
-    ];
-
+  List<charts.Series<AdcDatum, int>> createListData(){
     return [
       new charts.Series<AdcDatum, int>(
         id: 'Sales',
-        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+        colorFn: (_, __) => charts.MaterialPalette.gray.shadeDefault,
         domainFn: (AdcDatum reading, _) => reading.id,
         measureFn: (AdcDatum reading, _) => reading.value,
-        data: data,
+        data: values,
       )
     ];
   }
+
+  // factory AdcRouteState.withSampleData() {
+  //   return new AdcRouteState(
+  //     _createSampleData(),
+  //     false
+  //   );
+  // }
+
+  // static List<charts.Series<AdcDatum, int>> _createSampleData() {
+  //   var data = [
+  //     new AdcDatum(0, 5),
+  //     new AdcDatum(1, 25),
+  //     new AdcDatum(2, 100),
+  //     new AdcDatum(3, 75),
+  //   ];
+
+  //   return [
+  //     new charts.Series<AdcDatum, int>(
+  //       id: 'Sales',
+  //       colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+  //       domainFn: (AdcDatum reading, _) => reading.id,
+  //       measureFn: (AdcDatum reading, _) => reading.value,
+  //       data: data,
+  //     )
+  //   ];
+  // }
 
   Widget build(BuildContext context){
     return(
