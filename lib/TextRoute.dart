@@ -28,10 +28,10 @@ class TextRouteState extends State<TextRoute>{
                 List<int> bleReadLogs = await this.widget.readLogChar.read();
                 String readingStr = new String.fromCharCodes(bleReadLogs);
 
-                String fixedReadingStr = readingStr.substring(0,readingStr.indexOf(String.fromCharCode(0)));
+                //String fixedReadingStr = readingStr.substring(0,readingStr.indexOf(String.fromCharCode(0)));
 
                 setState((){
-                  text = fixedReadingStr;
+                  text = readingStr;
                 });
 
               }),
