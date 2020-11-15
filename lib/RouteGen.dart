@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:esp32_diagnostics_app/main.dart';
 import 'package:esp32_diagnostics_app/AdcRoute.dart';
 import 'package:esp32_diagnostics_app/ConnectRoute.dart';
+import 'package:esp32_diagnostics_app/TextRoute.dart';
 
 
 class RouteGen{
@@ -15,6 +16,8 @@ class RouteGen{
         return MaterialPageRoute(builder: (_)=>AdcRoute(readChar: args));
       case '/connect':
         return MaterialPageRoute(builder: (_)=>ConnectRoute(arg: args));
+      case '/text':
+        return MaterialPageRoute(builder: (_)=>TextRoute(readLogChar: args));
       default:
         return errorRoute();
     }

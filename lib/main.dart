@@ -35,6 +35,7 @@ class HomeRouteState extends State<HomeRoute>{
   BluetoothService customService;
   BluetoothCharacteristic readChar;
   BluetoothCharacteristic writeChar;
+  BluetoothCharacteristic readLogChar;
 
   String connectButtonDisplay = 'Connect';
   String connectButtonDisplayDevice = '';
@@ -49,6 +50,14 @@ class HomeRouteState extends State<HomeRoute>{
       body: Center(
         child: Column(
           children: <Widget>[
+
+            RaisedButton(
+              child: Text('Text Dump'),
+              onPressed: (){
+                Navigator.of(context).pushNamed('/text',arguments: readLogChar);
+              }
+            ),
+
             RaisedButton(
               child: Text('ADC Graph'),
               onPressed: (){
@@ -90,10 +99,11 @@ class HomeRouteState extends State<HomeRoute>{
     });
   }
 
-  void setConnectionChars(BluetoothCharacteristic r,BluetoothCharacteristic w){
+  void setConnectionChars(BluetoothCharacteristic r,BluetoothCharacteristic w,BluetoothCharacteristic readLog){
     setState((){
       readChar = r;
       writeChar = w;
+      readLogChar = readLog;
     });
   }
 }

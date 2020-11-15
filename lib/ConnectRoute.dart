@@ -96,6 +96,7 @@ class ConnectRouteState extends State<ConnectRoute>{
 
     BluetoothCharacteristic r;
     BluetoothCharacteristic w;
+    BluetoothCharacteristic readLog;
 
     for(BluetoothCharacteristic c in characteristics) {
       if(c.uuid.toString() == 'c6f2d9e3-49e7-4125-9014-bfc6d669ff01'){
@@ -108,9 +109,12 @@ class ConnectRouteState extends State<ConnectRoute>{
         w = c;
         print('Set write char');
       }
+      if(c.uuid.toString() == 'c6f2d9e3-49e7-4125-9014-bfc6d669ff03'){
+        readLog = c;
+      }
     }
 
-    this.widget.arg.setCharacteristicsFunction(r,w);
+    this.widget.arg.setCharacteristicsFunction(r,w,readLog);
 
     return;
   }
