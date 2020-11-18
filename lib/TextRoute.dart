@@ -31,12 +31,18 @@ class TextRouteState extends State<TextRoute>{
                 //String fixedReadingStr = readingStr.substring(0,readingStr.indexOf(String.fromCharCode(0)));
 
                 setState((){
-                  text = readingStr;
+                  text = text + readingStr;
                 });
 
               }),
 
-              Text(text)
+              Expanded(
+                flex: 1,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Text(text)
+                )
+              )
             ],
           )
         )
