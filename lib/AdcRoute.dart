@@ -26,9 +26,6 @@ class AdcRouteState extends State<AdcRoute>{
 
   List<AdcDatum> values = new List(50);
 
-  int xAxisMin = 0;
-  int xAxisMax = 50;
-
   ListQueue<AdcDatum> history_values = new ListQueue(50);
 
   AdcRouteState(){
@@ -137,8 +134,6 @@ class AdcRouteState extends State<AdcRoute>{
                   setState((){
                     lastReading = fixedStr;
                     values[49] = new AdcDatum(tsInt,readingInt);
-                    xAxisMin = values[0].id;
-                    xAxisMax = values[49].id;
                     graphSeries = updateGraphSeries();
                   });
                 }
@@ -175,8 +170,9 @@ class AdcRouteState extends State<AdcRoute>{
                       // dynamically.
                       new charts.PanAndZoomBehavior(),
                     ],
+
                     domainAxis: new charts.NumericAxisSpec(
-                      tickProviderSpec: charts.BasicNumericTickProviderSpec(desiredMaxTickCount: 1, zeroBound: false)
+                      tickProviderSpec: charts.BasicNumericTickProviderSpec(desiredTickCount: 0, desiredMaxTickCount: 1, desiredMinTickCount: 0, zeroBound: false)
                     ),
                   )
                 )
