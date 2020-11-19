@@ -1,4 +1,4 @@
-import 'dart:math';
+import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
@@ -22,7 +22,11 @@ class AdcRouteState extends State<AdcRoute>{
   List<charts.Series<AdcDatum, int>> graphSeries;
   bool animate;
 
+  bool running = false;
+
   List<AdcDatum> values = new List(50);
+
+  ListQueue<AdcDatum> history_values = new ListQueue();
 
   AdcRouteState(){
     graphSeries = createListData();
@@ -96,7 +100,15 @@ class AdcRouteState extends State<AdcRoute>{
               Text(lastReading),
               RaisedButton(child: Text('Start Graphing'), onPressed: () async {
                 
+                setState((){
+                  running = true;
+                });
+
                 while(true){
+                  if(running == false){
+                    break;
+                  }
+
                   List<int> reading = await this.widget.readChar.read();
                   String readingStr = new String.fromCharCodes(reading);
 
@@ -121,11 +133,29 @@ class AdcRouteState extends State<AdcRoute>{
                 }
               }),
 
-              Expanded( 
+              Expanded(
+                child: GestureDetector(
+                  onHorizontalDragEnd: (details){
+                    if(details.primaryVelocity > 0){
+                      setState((){
+                        running = false;
+                      });
+                      print("Swiped RIght");
+                    }
+                    if(details.primaryVelocity < 0)
+                    {
+                      setState((){
+                        running = false;
+                      });
+                      print("Swiped Left");
+                    }
+                  },
+
                   child: charts.LineChart(
                     graphSeries,
                     animate: false
                   )
+                )
               )
 
             ]
