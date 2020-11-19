@@ -175,9 +175,9 @@ class AdcRouteState extends State<AdcRoute>{
                       // dynamically.
                       new charts.PanAndZoomBehavior(),
                     ],
-                    // domainAxis: new charts.NumericAxisSpec(
-                    //   tickProviderSpec: charts.BasicNumericTickProviderSpec(desiredMinTickCount: 2)
-                    // ),
+                    domainAxis: new charts.NumericAxisSpec(
+                      tickProviderSpec: charts.BasicNumericTickProviderSpec(desiredMaxTickCount: 1, zeroBound: false)
+                    ),
                   )
                 )
               )
