@@ -26,7 +26,10 @@ class AdcRouteState extends State<AdcRoute>{
 
   List<AdcDatum> values = new List(50);
 
-  ListQueue<AdcDatum> history_values = new ListQueue();
+  int xAxisMin = 0;
+  int xAxisMax = 50;
+
+  ListQueue<AdcDatum> history_values = new ListQueue(50);
 
   AdcRouteState(){
     graphSeries = createListData();
@@ -109,25 +112,33 @@ class AdcRouteState extends State<AdcRoute>{
                     break;
                   }
 
-                  List<int> reading = await this.widget.readChar.read();
+                  List<int> reading = await this.widget.readChar.read(); //Reading|timestamp + remaining null terminators
                   String readingStr = new String.fromCharCodes(reading);
 
-                  String fixedStr = readingStr.substring(0,readingStr.indexOf(String.fromCharCode(0)));
+                  String fixedStr = readingStr.substring(0,readingStr.indexOf(String.fromCharCode(0))); //Reading|timestamp without null terminators
+
+                  String adcValStr = fixedStr.substring(0,fixedStr.indexOf("|")); // Reading only
+                  String ts = fixedStr.substring(fixedStr.indexOf("|")+1,fixedStr.length); //Timestamp only
 
                   //print(fixedStr.length);
 
-                  int readingInt = int.parse(fixedStr);
+                  int readingInt = int.parse(adcValStr);
+                  int tsInt = int.parse(ts);
                   //int readingInt = int.parse(readingStr);
 
                   //Dequeue first term and queue this reading
                   for(int i=0;i<=48;i++){
                     values[i] = values[i+1];
-                    values[i].id = i;
+                    //values[i].id = tsInt;
                   }
+
+                  
 
                   setState((){
                     lastReading = fixedStr;
-                    values[49] = new AdcDatum(49,readingInt);
+                    values[49] = new AdcDatum(tsInt,readingInt);
+                    xAxisMin = values[0].id;
+                    xAxisMax = values[49].id;
                     graphSeries = updateGraphSeries();
                   });
                 }
@@ -153,7 +164,20 @@ class AdcRouteState extends State<AdcRoute>{
 
                   child: charts.LineChart(
                     graphSeries,
-                    animate: false
+                    animate: false,
+
+                    behaviors: [
+                      // Add the sliding viewport behavior to have the viewport center on the
+                      // domain that is currently selected.
+                      new charts.SlidingViewport(),
+                      // A pan and zoom behavior helps demonstrate the sliding viewport
+                      // behavior by allowing the data visible in the viewport to be adjusted
+                      // dynamically.
+                      new charts.PanAndZoomBehavior(),
+                    ],
+                    // domainAxis: new charts.NumericAxisSpec(
+                    //   tickProviderSpec: charts.BasicNumericTickProviderSpec(desiredMinTickCount: 2)
+                    // ),
                   )
                 )
               )
@@ -167,8 +191,8 @@ class AdcRouteState extends State<AdcRoute>{
 }
 
 class AdcDatum{
-  int id;
-  int value;
+  int id = 0;
+  int value = 0;
 
   AdcDatum(this.id,this.value);
 }
