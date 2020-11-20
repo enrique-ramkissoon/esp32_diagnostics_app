@@ -109,7 +109,24 @@ class AdcRouteState extends State<AdcRoute>{
             children: <Widget>[
               Text(lastReading),
               RaisedButton(child: Text('Start Graphing'), onPressed: () async {
-                //TODO: Reset values to the latest in history when the start graphing button is pressed
+                
+                //Reset view to last 50 values before resuming (if the viewport was shifted). This condition is false at the start of graphing
+                if(historyValues.length > 50){
+                  print(historyValues.length);
+                  currentDisplayStart = historyValues.length-viewportSize-1;
+
+                  setState((){ 
+                    int j = 0;
+
+                    for(int i=currentDisplayStart;i<currentDisplayStart+viewportSize;i++){
+                      values[j] = historyValues.elementAt(i);
+                      j++;
+                    }
+
+                    graphSeries = updateGraphSeries();
+                  });
+                }
+
                 setState((){
                   running = true;
                 });
