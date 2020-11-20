@@ -24,9 +24,16 @@ class AdcRouteState extends State<AdcRoute>{
 
   bool running = false;
 
+  //number of points displayed at any time
+  int viewportSize = 50;
   List<AdcDatum> values = new List(50);
 
-  ListQueue<AdcDatum> history_values = new ListQueue(50);
+  //current index of history_values currently being displayed.
+  int currentDisplayStart = 0;
+  //shifted points per swipe
+  int shiftSize = 10;
+  //Contains history of points.
+  ListQueue<AdcDatum> historyValues = new ListQueue();
 
   AdcRouteState(){
     graphSeries = createListData();
@@ -34,8 +41,9 @@ class AdcRouteState extends State<AdcRoute>{
 
   List<charts.Series<AdcDatum, int>> createListData(){
 
-    for(int i=0;i<=49;i++){
+    for(int i=0;i<=viewportSize-1;i++){
       values[i] = new AdcDatum(i,0);
+      historyValues.add(new AdcDatum(i,0)); // add to history
     }
 
     return [
@@ -124,7 +132,7 @@ class AdcRouteState extends State<AdcRoute>{
                   //int readingInt = int.parse(readingStr);
 
                   //Dequeue first term and queue this reading
-                  for(int i=0;i<=48;i++){
+                  for(int i=0;i<=viewportSize-2;i++){
                     values[i] = values[i+1];
                     //values[i].id = tsInt;
                   }
@@ -133,7 +141,9 @@ class AdcRouteState extends State<AdcRoute>{
 
                   setState((){
                     lastReading = fixedStr;
-                    values[49] = new AdcDatum(tsInt,readingInt);
+                    values[viewportSize-1] = new AdcDatum(tsInt,readingInt);
+                    historyValues.add(new AdcDatum(tsInt,readingInt));
+                    currentDisplayStart++;
                     graphSeries = updateGraphSeries();
                   });
                 }
@@ -142,11 +152,29 @@ class AdcRouteState extends State<AdcRoute>{
               Expanded(
                 child: GestureDetector(
                   onHorizontalDragEnd: (details){
+
                     if(details.primaryVelocity > 0){
                       setState((){
                         running = false;
                       });
-                      print("Swiped RIght");
+                      print("Swiped Right");
+
+                      if(currentDisplayStart-shiftSize >= 0){
+                        currentDisplayStart-=shiftSize;
+
+                        setState((){
+                          
+                          int j = 0;
+
+                          for(int i=currentDisplayStart;i<currentDisplayStart+viewportSize;i++){
+                            values[j] = historyValues.elementAt(i);
+                            j++;
+                          }
+
+                          graphSeries = updateGraphSeries();
+                        });
+                      }
+
                     }
                     if(details.primaryVelocity < 0)
                     {
@@ -154,6 +182,7 @@ class AdcRouteState extends State<AdcRoute>{
                         running = false;
                       });
                       print("Swiped Left");
+
                     }
                   },
 
@@ -170,7 +199,8 @@ class AdcRouteState extends State<AdcRoute>{
                       // dynamically.
                       new charts.PanAndZoomBehavior(),
                     ],
-
+                    
+                    //domainAxis: can be removed for a graph with smoother transitions, but significanly reduced domain ticks
                     domainAxis: new charts.NumericAxisSpec(
                       tickProviderSpec: charts.BasicNumericTickProviderSpec(desiredTickCount: 0, desiredMaxTickCount: 1, desiredMinTickCount: 0, zeroBound: false)
                     ),
