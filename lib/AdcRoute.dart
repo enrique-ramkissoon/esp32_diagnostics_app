@@ -32,6 +32,8 @@ class AdcRouteState extends State<AdcRoute>{
   int currentDisplayStart = 0;
   //shifted points per swipe
   int shiftSize = 10;
+  //number of right swipes performed. Only this number of left swipes is permitted
+  int rightSwipes = 0;
   //Contains history of points.
   ListQueue<AdcDatum> historyValues = new ListQueue();
 
@@ -107,7 +109,7 @@ class AdcRouteState extends State<AdcRoute>{
             children: <Widget>[
               Text(lastReading),
               RaisedButton(child: Text('Start Graphing'), onPressed: () async {
-                
+                //TODO: Reset values to the latest in history when the start graphing button is pressed
                 setState((){
                   running = true;
                 });
@@ -172,6 +174,7 @@ class AdcRouteState extends State<AdcRoute>{
                           }
 
                           graphSeries = updateGraphSeries();
+                          rightSwipes++;
                         });
                       }
 
@@ -182,6 +185,23 @@ class AdcRouteState extends State<AdcRoute>{
                         running = false;
                       });
                       print("Swiped Left");
+
+                      if(rightSwipes >= 1){
+                        rightSwipes--;
+                        currentDisplayStart+=shiftSize;
+
+                        setState((){
+                          
+                          int j = 0;
+
+                          for(int i=currentDisplayStart;i<currentDisplayStart+viewportSize;i++){
+                            values[j] = historyValues.elementAt(i);
+                            j++;
+                          }
+
+                          graphSeries = updateGraphSeries();
+                        });
+                      }
 
                     }
                   },
