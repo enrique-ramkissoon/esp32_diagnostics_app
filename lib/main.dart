@@ -15,7 +15,7 @@ class Characteristics{
 
   void write(List<int> data) async {
     await wc.write(data);
-    print('Wrote command 0x02');
+    print('Wrote command ' + data[0].toString());
   }
 }
 

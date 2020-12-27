@@ -116,7 +116,7 @@ class AdcRouteState extends State<AdcRoute>{
           stop[0] = 0x00;
           this.widget.characteristics.write(stop);
 
-          return false;
+          return true;
         },
 
         child: Scaffold(
