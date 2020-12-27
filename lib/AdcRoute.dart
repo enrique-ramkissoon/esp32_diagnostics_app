@@ -1,14 +1,16 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_blue/flutter_blue.dart';
+//import 'package:flutter_blue/flutter_blue.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
+
+import 'package:esp32_diagnostics_app/main.dart';
 
 class AdcRoute extends StatefulWidget{
 
-  final BluetoothCharacteristic readChar;
+  final Characteristics characteristics;
 
-  AdcRoute({Key key, @required this.readChar}) : super(key: key);
+  AdcRoute({Key key, @required this.characteristics}) : super(key: key);
 
   @override
   AdcRouteState createState(){
@@ -39,6 +41,15 @@ class AdcRouteState extends State<AdcRoute>{
 
   AdcRouteState(){
     graphSeries = createListData();
+  }
+
+  @override
+  void initState(){
+    super.initState();
+
+    List<int> cmd = new List(1);
+    cmd[0] = 0x02;
+    this.widget.characteristics.write(cmd);
   }
 
   List<charts.Series<AdcDatum, int>> createListData(){
@@ -99,153 +110,163 @@ class AdcRouteState extends State<AdcRoute>{
 
   Widget build(BuildContext context){
     return(
-      Scaffold(
-        appBar: AppBar(title: Text('ADC Graph')),
+      WillPopScope(
+        onWillPop: () async {
+          List<int> stop = new List(1);
+          stop[0] = 0x00;
+          this.widget.characteristics.write(stop);
 
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Text(lastReading),
-              RaisedButton(child: Text('Start Graphing'), onPressed: () async {
-                
-                //Reset view to last 50 values before resuming (if the viewport was shifted). This condition is false at the start of graphing
-                if(historyValues.length > 50){
-                  print(historyValues.length);
-                  currentDisplayStart = historyValues.length-viewportSize-1;
+          return false;
+        },
 
-                  setState((){ 
-                    int j = 0;
+        child: Scaffold(
+          appBar: AppBar(title: Text('ADC Graph')),
 
-                    for(int i=currentDisplayStart;i<currentDisplayStart+viewportSize;i++){
-                      values[j] = historyValues.elementAt(i);
-                      j++;
-                    }
-
-                    graphSeries = updateGraphSeries();
-                  });
-                }
-
-                setState((){
-                  running = true;
-                });
-
-                while(true){
-                  if(running == false){
-                    break;
-                  }
-
-                  List<int> reading = await this.widget.readChar.read(); //Reading|timestamp + remaining null terminators
-                  String readingStr = new String.fromCharCodes(reading);
-
-                  String fixedStr = readingStr.substring(0,readingStr.indexOf(String.fromCharCode(0))); //Reading|timestamp without null terminators
-
-                  String adcValStr = fixedStr.substring(0,fixedStr.indexOf("|")); // Reading only
-                  String ts = fixedStr.substring(fixedStr.indexOf("|")+1,fixedStr.length); //Timestamp only
-
-                  //print(fixedStr.length);
-
-                  int readingInt = int.parse(adcValStr);
-                  int tsInt = int.parse(ts);
-                  //int readingInt = int.parse(readingStr);
-
-                  //Dequeue first term and queue this reading
-                  for(int i=0;i<=viewportSize-2;i++){
-                    values[i] = values[i+1];
-                    //values[i].id = tsInt;
-                  }
-
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(lastReading),
+                RaisedButton(child: Text('Start Graphing'), onPressed: () async {
                   
+                  //Reset view to last 50 values before resuming (if the viewport was shifted). This condition is false at the start of graphing
+                  if(historyValues.length > 50){
+                    print(historyValues.length);
+                    currentDisplayStart = historyValues.length-viewportSize-1;
+
+                    setState((){ 
+                      int j = 0;
+
+                      for(int i=currentDisplayStart;i<currentDisplayStart+viewportSize;i++){
+                        values[j] = historyValues.elementAt(i);
+                        j++;
+                      }
+
+                      graphSeries = updateGraphSeries();
+                    });
+                  }
 
                   setState((){
-                    lastReading = fixedStr;
-                    values[viewportSize-1] = new AdcDatum(tsInt,readingInt);
-                    historyValues.add(new AdcDatum(tsInt,readingInt));
-                    currentDisplayStart++;
-                    graphSeries = updateGraphSeries();
+                    running = true;
                   });
-                }
-              }),
 
-              Expanded(
-                child: GestureDetector(
-                  onHorizontalDragEnd: (details){
-
-                    if(details.primaryVelocity > 0){
-                      setState((){
-                        running = false;
-                      });
-                      print("Swiped Right");
-
-                      if(currentDisplayStart-shiftSize >= 0){
-                        currentDisplayStart-=shiftSize;
-
-                        setState((){
-                          
-                          int j = 0;
-
-                          for(int i=currentDisplayStart;i<currentDisplayStart+viewportSize;i++){
-                            values[j] = historyValues.elementAt(i);
-                            j++;
-                          }
-
-                          graphSeries = updateGraphSeries();
-                          rightSwipes++;
-                        });
-                      }
-
+                  while(true){
+                    if(running == false){
+                      break;
                     }
-                    if(details.primaryVelocity < 0)
-                    {
-                      setState((){
-                        running = false;
-                      });
-                      print("Swiped Left");
 
-                      if(rightSwipes >= 1){
-                        rightSwipes--;
-                        currentDisplayStart+=shiftSize;
+                    List<int> reading = await this.widget.characteristics.rc.read(); //Reading|timestamp + remaining null terminators
+                    String readingStr = new String.fromCharCodes(reading);
 
-                        setState((){
-                          
-                          int j = 0;
+                    String fixedStr = readingStr.substring(0,readingStr.indexOf(String.fromCharCode(0))); //Reading|timestamp without null terminators
 
-                          for(int i=currentDisplayStart;i<currentDisplayStart+viewportSize;i++){
-                            values[j] = historyValues.elementAt(i);
-                            j++;
-                          }
+                    String adcValStr = fixedStr.substring(0,fixedStr.indexOf("|")); // Reading only
+                    String ts = fixedStr.substring(fixedStr.indexOf("|")+1,fixedStr.length); //Timestamp only
 
-                          graphSeries = updateGraphSeries();
-                        });
-                      }
+                    //print(fixedStr.length);
 
+                    int readingInt = int.parse(adcValStr);
+                    int tsInt = int.parse(ts);
+                    //int readingInt = int.parse(readingStr);
+
+                    //Dequeue first term and queue this reading
+                    for(int i=0;i<=viewportSize-2;i++){
+                      values[i] = values[i+1];
+                      //values[i].id = tsInt;
                     }
-                  },
 
-                  child: charts.LineChart(
-                    graphSeries,
-                    animate: false,
-
-                    behaviors: [
-                      // Add the sliding viewport behavior to have the viewport center on the
-                      // domain that is currently selected.
-                      new charts.SlidingViewport(),
-                      // A pan and zoom behavior helps demonstrate the sliding viewport
-                      // behavior by allowing the data visible in the viewport to be adjusted
-                      // dynamically.
-                      new charts.PanAndZoomBehavior(),
-                    ],
                     
-                    //domainAxis: can be removed for a graph with smoother transitions, but significanly reduced domain ticks
-                    domainAxis: new charts.NumericAxisSpec(
-                      tickProviderSpec: charts.BasicNumericTickProviderSpec(desiredTickCount: 0, desiredMaxTickCount: 1, desiredMinTickCount: 0, zeroBound: false)
-                    ),
+
+                    setState((){
+                      lastReading = fixedStr;
+                      values[viewportSize-1] = new AdcDatum(tsInt,readingInt);
+                      historyValues.add(new AdcDatum(tsInt,readingInt));
+                      currentDisplayStart++;
+                      graphSeries = updateGraphSeries();
+                    });
+                  }
+                }),
+
+                Expanded(
+                  child: GestureDetector(
+                    onHorizontalDragEnd: (details){
+
+                      if(details.primaryVelocity > 0){
+                        setState((){
+                          running = false;
+                        });
+                        print("Swiped Right");
+
+                        if(currentDisplayStart-shiftSize >= 0){
+                          currentDisplayStart-=shiftSize;
+
+                          setState((){
+                            
+                            int j = 0;
+
+                            for(int i=currentDisplayStart;i<currentDisplayStart+viewportSize;i++){
+                              values[j] = historyValues.elementAt(i);
+                              j++;
+                            }
+
+                            graphSeries = updateGraphSeries();
+                            rightSwipes++;
+                          });
+                        }
+
+                      }
+                      if(details.primaryVelocity < 0)
+                      {
+                        setState((){
+                          running = false;
+                        });
+                        print("Swiped Left");
+
+                        if(rightSwipes >= 1){
+                          rightSwipes--;
+                          currentDisplayStart+=shiftSize;
+
+                          setState((){
+                            
+                            int j = 0;
+
+                            for(int i=currentDisplayStart;i<currentDisplayStart+viewportSize;i++){
+                              values[j] = historyValues.elementAt(i);
+                              j++;
+                            }
+
+                            graphSeries = updateGraphSeries();
+                          });
+                        }
+
+                      }
+                    },
+
+                    child: charts.LineChart(
+                      graphSeries,
+                      animate: false,
+
+                      behaviors: [
+                        // Add the sliding viewport behavior to have the viewport center on the
+                        // domain that is currently selected.
+                        new charts.SlidingViewport(),
+                        // A pan and zoom behavior helps demonstrate the sliding viewport
+                        // behavior by allowing the data visible in the viewport to be adjusted
+                        // dynamically.
+                        new charts.PanAndZoomBehavior(),
+                      ],
+                      
+                      //domainAxis: can be removed for a graph with smoother transitions, but significanly reduced domain ticks
+                      domainAxis: new charts.NumericAxisSpec(
+                        tickProviderSpec: charts.BasicNumericTickProviderSpec(desiredTickCount: 0, desiredMaxTickCount: 1, desiredMinTickCount: 0, zeroBound: false)
+                      ),
+                    )
                   )
                 )
-              )
 
-            ]
+              ]
+            )
           )
         )
       )
