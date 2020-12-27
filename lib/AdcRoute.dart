@@ -1,14 +1,16 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_blue/flutter_blue.dart';
+//import 'package:flutter_blue/flutter_blue.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
+
+import 'package:esp32_diagnostics_app/main.dart';
 
 class AdcRoute extends StatefulWidget{
 
-  final BluetoothCharacteristic readChar;
+  final Characteristics characteristics;
 
-  AdcRoute({Key key, @required this.readChar}) : super(key: key);
+  AdcRoute({Key key, @required this.characteristics}) : super(key: key);
 
   @override
   AdcRouteState createState(){
@@ -39,6 +41,15 @@ class AdcRouteState extends State<AdcRoute>{
 
   AdcRouteState(){
     graphSeries = createListData();
+  }
+
+  @override
+  void initState(){
+    super.initState();
+
+    List<int> cmd = new List(1);
+    cmd[0] = 0x02;
+    this.widget.characteristics.write(cmd);
   }
 
   List<charts.Series<AdcDatum, int>> createListData(){
@@ -136,7 +147,7 @@ class AdcRouteState extends State<AdcRoute>{
                     break;
                   }
 
-                  List<int> reading = await this.widget.readChar.read(); //Reading|timestamp + remaining null terminators
+                  List<int> reading = await this.widget.characteristics.rc.read(); //Reading|timestamp + remaining null terminators
                   String readingStr = new String.fromCharCodes(reading);
 
                   String fixedStr = readingStr.substring(0,readingStr.indexOf(String.fromCharCode(0))); //Reading|timestamp without null terminators

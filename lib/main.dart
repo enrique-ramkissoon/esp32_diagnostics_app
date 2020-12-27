@@ -6,6 +6,19 @@ void main() {
   runApp(DiagnosticsApp());
 }
 
+//class containing characteristics. An instance of this class should be passed to all diagnostic routes.
+class Characteristics{
+  BluetoothCharacteristic rc; //read char
+  BluetoothCharacteristic wc; //write char
+
+  Characteristics(this.rc,this.wc);
+
+  void write(List<int> data) async {
+    await wc.write(data);
+    print('Wrote command 0x02');
+  }
+}
+
 class DiagnosticsApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -52,7 +65,7 @@ class HomeRouteState extends State<HomeRoute>{
             RaisedButton(
               child: Text('ADC Graph'),
               onPressed: (){
-                Navigator.of(context).pushNamed('/adc',arguments: readChar);
+                Navigator.of(context).pushNamed('/adc',arguments: Characteristics(readChar,writeChar));
               }
             ),
 
