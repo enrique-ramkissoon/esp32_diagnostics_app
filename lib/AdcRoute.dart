@@ -119,7 +119,7 @@ class AdcRouteState extends State<AdcRoute>{
             running = false;
           });
 
-          await this.widget.characteristics.write(stop);
+          await this.widget.characteristics.write(stop);  //TODO: Properly deinitialize page.
 
           return true;
         },

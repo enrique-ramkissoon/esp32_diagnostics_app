@@ -23,7 +23,7 @@ class TextRouteState extends State<TextDumpRoute>{
 
     List<int> cmd = new List(1);
     cmd[0] = 0x01;
-    this.widget.characteristics.write(cmd);
+    this.widget.characteristics.write(cmd); //TODO: Properly deinitialize page.
   }
 
   Widget build(BuildContext context){
