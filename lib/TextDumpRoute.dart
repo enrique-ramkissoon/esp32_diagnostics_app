@@ -23,7 +23,7 @@ class TextRouteState extends State<TextDumpRoute>{
 
     List<int> cmd = new List(1);
     cmd[0] = 0x01;
-    this.widget.characteristics.write(cmd); //TODO: Properly deinitialize page.
+    this.widget.characteristics.write(cmd);
   }
 
   Widget build(BuildContext context){
@@ -33,12 +33,7 @@ class TextRouteState extends State<TextDumpRoute>{
           running = false;
         });
 
-        List<int> stop = new List(1);
-        stop[0] = 0x00;
-
-        await this.widget.characteristics.write(stop);
-
-        return true;
+        return false;
       },
 
       child: Scaffold(
@@ -70,6 +65,12 @@ class TextRouteState extends State<TextDumpRoute>{
 
                     // await new Future.delayed(const Duration(milliseconds: 100));
                   }
+
+                  List<int> stop = new List(1);
+                  stop[0] = 0x00;
+
+                  await this.widget.characteristics.write(stop);
+                  Navigator.pop(context);
                 },
               ),
 
