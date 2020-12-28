@@ -49,7 +49,11 @@ class TextRouteState extends State<TextDumpRoute>{
                     text = text + readingStr;
                   });
 
-                  //await new Future.delayed(const Duration(milliseconds: 1000));
+                  List<int> ack = new List(1);
+                  ack[0] = 0x1F;
+                  await this.widget.characteristics.write(ack);
+
+                  // await new Future.delayed(const Duration(milliseconds: 100));
                 }
               },
             ),

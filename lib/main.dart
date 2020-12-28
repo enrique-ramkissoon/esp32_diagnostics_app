@@ -13,7 +13,7 @@ class Characteristics{
 
   Characteristics(this.rc,this.wc);
 
-  void write(List<int> data) async {
+  Future<void> write(List<int> data) async {
     await wc.write(data);
     print('Wrote command ' + data[0].toString());
   }
