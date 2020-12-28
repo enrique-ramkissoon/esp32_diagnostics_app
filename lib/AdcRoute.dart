@@ -114,7 +114,12 @@ class AdcRouteState extends State<AdcRoute>{
         onWillPop: () async {
           List<int> stop = new List(1);
           stop[0] = 0x00;
-          this.widget.characteristics.write(stop);
+
+          setState((){
+            running = false;
+          });
+
+          await this.widget.characteristics.write(stop);
 
           return true;
         },
