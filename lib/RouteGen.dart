@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:esp32_diagnostics_app/main.dart';
 import 'package:esp32_diagnostics_app/TextDumpRoute.dart';
 import 'package:esp32_diagnostics_app/AdcRoute.dart';
+import 'package:esp32_diagnostics_app/StateRoute.dart';
 import 'package:esp32_diagnostics_app/ConnectRoute.dart';
 
 
@@ -16,6 +17,8 @@ class RouteGen{
         return MaterialPageRoute(builder: (_)=>TextDumpRoute(characteristics: args));
       case '/adc':
         return MaterialPageRoute(builder: (_)=>AdcRoute(characteristics: args));
+      case '/state':
+        return MaterialPageRoute(builder: (_)=>StateRoute(characteristics: args));
       case '/connect':
         return MaterialPageRoute(builder: (_)=>ConnectRoute(arg: args));
       default:
