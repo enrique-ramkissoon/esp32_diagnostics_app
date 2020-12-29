@@ -25,6 +25,7 @@ class AdcRouteState extends State<AdcRoute>{
   bool animate;
 
   bool running = false;
+  bool exitRequested = false;
 
   //number of points displayed at any time
   int viewportSize = 50;
@@ -112,11 +113,20 @@ class AdcRouteState extends State<AdcRoute>{
     return(
       WillPopScope(
         onWillPop: () async {
-          List<int> stop = new List(1);
-          stop[0] = 0x00;
-          this.widget.characteristics.write(stop);
+          setState((){
+            if(running == false){
+              List<int> stop = new List(1);
+              stop[0] = 0x00;
 
-          return true;
+              this.widget.characteristics.write(stop);
+              Navigator.pop(context);
+            }else{
+              exitRequested = true;
+              running = false;
+            }
+          });
+
+          return false;
         },
 
         child: Scaffold(
@@ -186,6 +196,15 @@ class AdcRouteState extends State<AdcRoute>{
                       graphSeries = updateGraphSeries();
                     });
                   }
+
+                  if(exitRequested == true){
+                    List<int> stop = new List(1);
+                    stop[0] = 0x00;
+
+                    await this.widget.characteristics.write(stop);
+                    Navigator.pop(context);
+                  }
+
                 }),
 
                 Expanded(

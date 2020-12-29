@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:esp32_diagnostics_app/main.dart';
+import 'package:esp32_diagnostics_app/TextDumpRoute.dart';
 import 'package:esp32_diagnostics_app/AdcRoute.dart';
 import 'package:esp32_diagnostics_app/ConnectRoute.dart';
 
@@ -11,6 +12,8 @@ class RouteGen{
     switch(settings.name){
       case '/':
         return MaterialPageRoute(builder: (_)=>HomeRoute());
+      case '/textdump':
+        return MaterialPageRoute(builder: (_)=>TextDumpRoute(characteristics: args));
       case '/adc':
         return MaterialPageRoute(builder: (_)=>AdcRoute(characteristics: args));
       case '/connect':
