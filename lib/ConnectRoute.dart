@@ -72,7 +72,7 @@ class ConnectRouteState extends State<ConnectRoute>{
 
   Future<void> bleConnect() async{
 
-    var ret = await this.espDevice.connect();
+    var ret = await this.espDevice.connect(autoConnect: false);
     this.widget.arg.setConnectionFunction(espDevice);
     return ret;
   }
