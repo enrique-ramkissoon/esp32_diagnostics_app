@@ -56,7 +56,7 @@ class StateRouteState extends State<StateRoute>{
                       continue;
                     }
 
-                    int index_duration = bleReadList.indexOf(0x3F,conn+1) - 2;
+                    int indexDuration = bleReadList.indexOf(0x3F,conn+1) - 2;
 
                     //if true then the next 6 bytes is the mac address
                     if(bleReadList[conn] == 0x3F){
@@ -76,7 +76,7 @@ class StateRouteState extends State<StateRoute>{
                     }
 
                     //the next 2 bytes is the duration
-                    if(conn == index_duration){
+                    if(conn == indexDuration){
                       int dur1 = bleReadList[conn];
                       int dur2 = bleReadList[conn+1];
 
