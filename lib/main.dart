@@ -85,6 +85,13 @@ class HomeRouteState extends State<HomeRoute>{
               }
             ),
 
+            RaisedButton(
+              child: Text('Stats'),
+              onPressed: (){
+                Navigator.of(context).pushNamed('/stats',arguments: Characteristics(readChar,writeChar));
+              }
+            ),
+
             Spacer(),
 
             RaisedButton(
