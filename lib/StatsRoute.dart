@@ -14,7 +14,16 @@ class StatsRoute extends StatefulWidget{
 
 class StatsRouteState extends State<StatsRoute>{
 
-  String text = 'Test';
+  double cpuUtil = -1;
+  int freeHeap = -1;
+
+  List<String> taskNames = new List();
+  List<String> runtimes = new List();
+  List<String> stacks = new List();
+
+  List<DataRow> tableRows = new List();
+
+  int idleIndex = 0;
 
   @override
   void initState(){
@@ -40,10 +49,11 @@ class StatsRouteState extends State<StatsRoute>{
         appBar: new AppBar(title: Text("ESP32 Statistics")),
 
         body: Center(
-          child: Column(
+          child: ListView(
+            scrollDirection: Axis.vertical,
             children: [
               RaisedButton(
-                child: Text('Stream Statistics'),
+                child: Text('Download Statistics'),
 
                 onPressed: () async {
 
@@ -116,8 +126,6 @@ class StatsRouteState extends State<StatsRoute>{
                   bleStr = String.fromCharCodes(bleList);
                   print(bleStr);
 
-                  List<String> stacks = new List();
-
                   for(int i=1;i<bleStr.length;i){
                     int nextStackStart  = bleStr.indexOf('|',i);
 
@@ -142,16 +150,59 @@ class StatsRouteState extends State<StatsRoute>{
                     print(taskNames[i] + "\t" + stacks[i+1] + "\t" + runtimes[i+1]);
                   }
 
+                  setState((){
+                    for(int i=0;i<taskNames.length;i++)
+                    {
+                      if(taskNames[i] == "IDLE"){
+                        idleIndex = i;
+                        break;
+                      }
+                    }
+
+                    cpuUtil = 100 - (100*( ((double.parse(runtimes[idleIndex+1]))) / (double.parse(runtimes[0])) ));
+                    freeHeap = int.parse(stacks[0]);
+
+                    tableRows.clear();
+
+                    for(int i=0;i<taskNames.length;i++){
+
+                      double taskCpuUtil = 100* ((double.parse(runtimes[i+1]))/(double.parse(runtimes[0])));
+                      double taskRuntimeMs = int.parse(runtimes[i+1]) / 1000;
+
+                      tableRows.add(new DataRow(cells:[DataCell(Text(taskNames[i])),DataCell(Text(taskRuntimeMs.toStringAsFixed(0))),DataCell(Text(stacks[i+1])), DataCell(Text(taskCpuUtil.toStringAsFixed(2)))]));
+                    }
+                  });
+
                 },
               ),
 
-              // Expanded(
-              //   flex: 1,
-              //   child: SingleChildScrollView(
-              //     scrollDirection: Axis.vertical,
-              //     child: Text(text),
-              //   )
-              // )
+              Text("CPU Utilization: " + cpuUtil.toString(), textAlign: TextAlign.left),
+              Text("Heap Available: " + freeHeap.toString(), textAlign: TextAlign.left),
+
+              Text('Tasks Runtime and CPU Utilization'),
+
+              DataTable(
+                columnSpacing: 2,
+                columns: [
+                  DataColumn(
+                    label: Text('Task',style: TextStyle(fontWeight: FontWeight.bold))
+                  ),
+
+                  DataColumn(
+                    label: Text('Run\nTime\n/ms',style: TextStyle(fontWeight: FontWeight.bold))
+                  ),
+
+                  DataColumn(
+                    label: Text('Stack\nRemaining\n/bytes',style: TextStyle(fontWeight: FontWeight.bold))
+                  ),
+
+                  DataColumn(
+                    label: Text('CPU\nUtilization\n/%',style: TextStyle(fontWeight: FontWeight.bold))
+                  ),
+                ],
+
+                rows: tableRows
+              )
             ],
           )
         )
