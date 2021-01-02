@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:charts_flutter/flutter.dart' as charts;
 
 import 'package:esp32_diagnostics_app/main.dart';
 
@@ -21,6 +22,9 @@ class StatsRouteState extends State<StatsRoute>{
   List<String> runtimes = new List();
   List<String> stacks = new List();
 
+  List<StatsDatum> cpuData = new List();
+  List<charts.Series> statSeries;
+
   List<DataRow> tableRows = new List();
 
   int idleIndex = 0;
@@ -33,6 +37,39 @@ class StatsRouteState extends State<StatsRoute>{
     cmd[0] = 0x04;
     this.widget.characteristics.write(cmd);
   }
+
+  StatsRouteState(){
+    statSeries = createListData();
+  }
+
+  List<charts.Series<StatsDatum, String>> createListData() {
+    cpuData.add(new StatsDatum('', 0));
+
+    return [
+      new charts.Series<StatsDatum, String>(
+        id: 'Stats',
+        domainFn: (StatsDatum stat, _) => stat.task,
+        measureFn: (StatsDatum stat, _) => stat.cpu,
+        data: cpuData,
+        // Set a label accessor to control the text of the arc label.
+        labelAccessorFn: (StatsDatum stat, _) => stat.task,
+      )
+    ];
+  }
+
+  List<charts.Series<StatsDatum, String>> updateListData() {
+    return [
+      new charts.Series<StatsDatum, String>(
+        id: 'Stats',
+        domainFn: (StatsDatum stat, _) => stat.task,
+        measureFn: (StatsDatum stat, _) => stat.cpu,
+        data: cpuData,
+        // Set a label accessor to control the text of the arc label.
+        labelAccessorFn: (StatsDatum stat, _) => stat.task,
+      )
+    ];
+  }
+
 
   Widget build(BuildContext context){
     return WillPopScope(
@@ -163,6 +200,9 @@ class StatsRouteState extends State<StatsRoute>{
                     freeHeap = int.parse(stacks[0]);
 
                     tableRows.clear();
+                    cpuData.clear();
+
+                    //update table and pie chart
 
                     for(int i=0;i<taskNames.length;i++){
 
@@ -170,6 +210,9 @@ class StatsRouteState extends State<StatsRoute>{
                       double taskRuntimeMs = int.parse(runtimes[i+1]) / 1000;
 
                       tableRows.add(new DataRow(cells:[DataCell(Text(taskNames[i])),DataCell(Text(taskRuntimeMs.toStringAsFixed(0))),DataCell(Text(stacks[i+1])), DataCell(Text(taskCpuUtil.toStringAsFixed(2)))]));
+
+                      cpuData.add(new StatsDatum(taskNames[i],taskCpuUtil));
+                      statSeries = updateListData();
                     }
                   });
 
@@ -202,6 +245,22 @@ class StatsRouteState extends State<StatsRoute>{
                 ],
 
                 rows: tableRows
+              ),
+
+              Container(
+                height: 800,
+                //child: Expanded(
+                  child: charts.PieChart(
+                    statSeries,
+                    animate: false,
+                    defaultRenderer: new charts.ArcRendererConfig(arcRendererDecorators: [
+                        new charts.ArcLabelDecorator(
+                            labelPosition: charts.ArcLabelPosition.outside
+                        )
+                      ]
+                    )
+                  )
+                //)
               )
             ],
           )
@@ -209,4 +268,11 @@ class StatsRouteState extends State<StatsRoute>{
       )
     );
   }
+}
+
+class StatsDatum{
+  String task;
+  double cpu;
+
+  StatsDatum(this.task,this.cpu);
 }
