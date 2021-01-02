@@ -52,7 +52,7 @@ class StatsRouteState extends State<StatsRoute>{
         measureFn: (StatsDatum stat, _) => stat.cpu,
         data: cpuData,
         // Set a label accessor to control the text of the arc label.
-        labelAccessorFn: (StatsDatum stat, _) => stat.task,
+        labelAccessorFn: (StatsDatum stat, _) => (stat.task + ' ' + stat.cpu.toStringAsFixed(1)),
       )
     ];
   }
@@ -65,7 +65,7 @@ class StatsRouteState extends State<StatsRoute>{
         measureFn: (StatsDatum stat, _) => stat.cpu,
         data: cpuData,
         // Set a label accessor to control the text of the arc label.
-        labelAccessorFn: (StatsDatum stat, _) => stat.task,
+        labelAccessorFn: (StatsDatum stat, _) => (stat.task + ' ' + stat.cpu.toStringAsFixed(1)),
       )
     ];
   }
@@ -255,7 +255,7 @@ class StatsRouteState extends State<StatsRoute>{
                     animate: false,
                     defaultRenderer: new charts.ArcRendererConfig(arcRendererDecorators: [
                         new charts.ArcLabelDecorator(
-                            labelPosition: charts.ArcLabelPosition.outside
+                            labelPosition: charts.ArcLabelPosition.inside,
                         )
                       ]
                     )
