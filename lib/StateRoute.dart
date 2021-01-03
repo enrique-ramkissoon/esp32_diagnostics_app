@@ -106,6 +106,12 @@ class StateRouteState extends State<StateRoute>{
                       continue;
                     }
 
+                    if(bleReadList[conn] == 0x04){
+                      readingStr = readingStr + "Viewed Stats,\n";
+                      conn+=1;
+                      continue;
+                    }
+
                     if(bleReadList.indexOf(0x3F,conn+1) == -1)
                     {
                       break;
