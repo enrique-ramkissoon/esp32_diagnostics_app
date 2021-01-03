@@ -43,7 +43,7 @@ class StatsRouteState extends State<StatsRoute>{
   }
 
   List<charts.Series<StatsDatum, String>> createListData() {
-    cpuData.add(new StatsDatum('', 0));
+    cpuData.add(new StatsDatum('no_data', 100));
 
     return [
       new charts.Series<StatsDatum, String>(
@@ -93,6 +93,8 @@ class StatsRouteState extends State<StatsRoute>{
                 child: Text('Download Statistics'),
 
                 onPressed: () async {
+
+                  await new Future.delayed(const Duration(seconds : 2)); 
 
                   List<int> bleList;
 
@@ -248,7 +250,8 @@ class StatsRouteState extends State<StatsRoute>{
               ),
 
               Container(
-                height: 800,
+                height: 300,
+                width: 300,
                 //child: Expanded(
                   child: charts.PieChart(
                     statSeries,
