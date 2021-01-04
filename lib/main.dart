@@ -92,6 +92,13 @@ class HomeRouteState extends State<HomeRoute>{
               }
             ),
 
+            RaisedButton(
+              child: Text('Commands'),
+              onPressed: (){
+                Navigator.of(context).pushNamed('/cmds',arguments: Characteristics(readChar,writeChar));
+              }
+            ),
+            
             Spacer(),
 
             RaisedButton(

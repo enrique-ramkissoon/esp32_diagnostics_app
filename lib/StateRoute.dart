@@ -112,6 +112,18 @@ class StateRouteState extends State<StateRoute>{
                       continue;
                     }
 
+                    if(bleReadList[conn] == 0x51){
+                      readingStr = readingStr + "Executed Command: Check HX711 Connection,\n";
+                      conn+=1;
+                      continue;
+                    }
+
+                    if(bleReadList[conn] == 0x52){
+                      readingStr = readingStr + "Executed Command: Verify HX711 Sample Rate,\n";
+                      conn+=1;
+                      continue;
+                    }
+
                     if(bleReadList.indexOf(0x3F,conn+1) == -1)
                     {
                       break;
