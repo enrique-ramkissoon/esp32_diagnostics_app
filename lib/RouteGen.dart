@@ -4,8 +4,8 @@ import 'package:esp32_diagnostics_app/TextDumpRoute.dart';
 import 'package:esp32_diagnostics_app/AdcRoute.dart';
 import 'package:esp32_diagnostics_app/StateRoute.dart';
 import 'package:esp32_diagnostics_app/StatsRoute.dart';
+import 'package:esp32_diagnostics_app/CommandsRoute.dart';
 import 'package:esp32_diagnostics_app/ConnectRoute.dart';
-
 
 class RouteGen{
   static Route<dynamic> generate(RouteSettings settings){
@@ -22,6 +22,8 @@ class RouteGen{
         return MaterialPageRoute(builder: (_)=>StateRoute(characteristics: args));
       case '/stats':
         return MaterialPageRoute(builder: (_)=>StatsRoute(characteristics: args));
+      case '/cmds':
+        return MaterialPageRoute(builder: (_)=>CommandsRoute(characteristics: args));
       case '/connect':
         return MaterialPageRoute(builder: (_)=>ConnectRoute(arg: args));
       default:
