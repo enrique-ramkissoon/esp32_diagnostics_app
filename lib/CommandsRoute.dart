@@ -70,7 +70,7 @@ class CommandsRouteState extends State<CommandsRoute>{
 
                   this.widget.characteristics.write(cmd);
 
-                  await new Future.delayed(const Duration(milliseconds : 1000));
+                  await new Future.delayed(const Duration(milliseconds : 3000));
 
                   List<int> bleRead = await this.widget.characteristics.rc.read();
 
