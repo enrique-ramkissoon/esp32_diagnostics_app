@@ -124,6 +124,12 @@ class StateRouteState extends State<StateRoute>{
                       continue;
                     }
 
+                    if(bleReadList[conn] == 0x06){
+                      readingStr = readingStr + "Viewed Network Configuration,\n";
+                      conn+=1;
+                      continue;
+                    }
+
                     if(bleReadList.indexOf(0x3F,conn+1) == -1)
                     {
                       break;
