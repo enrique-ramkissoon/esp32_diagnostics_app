@@ -105,6 +105,13 @@ class HomeRouteState extends State<HomeRoute>{
                 Navigator.of(context).pushNamed('/net',arguments: Characteristics(readChar,writeChar));
               }
             ),
+
+            RaisedButton(
+              child: Text('Calibrate'),
+              onPressed: (){
+                Navigator.of(context).pushNamed('/calibrate',arguments: Characteristics(readChar,writeChar));
+              }
+            ),
             
             Spacer(),
 

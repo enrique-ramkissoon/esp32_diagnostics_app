@@ -6,6 +6,7 @@ import 'package:esp32_diagnostics_app/StateRoute.dart';
 import 'package:esp32_diagnostics_app/StatsRoute.dart';
 import 'package:esp32_diagnostics_app/CommandsRoute.dart';
 import 'package:esp32_diagnostics_app/NetworkConfigRoute.dart';
+import 'package:esp32_diagnostics_app/CalibrateRoute.dart';
 import 'package:esp32_diagnostics_app/ConnectRoute.dart';
 
 class RouteGen{
@@ -27,6 +28,8 @@ class RouteGen{
         return MaterialPageRoute(builder: (_)=>CommandsRoute(characteristics: args));
       case '/net':
         return MaterialPageRoute(builder: (_)=>NetworkConfigRoute(characteristics: args));
+      case '/calibrate':
+        return MaterialPageRoute(builder: (_)=>CalibrateRoute(characteristics: args));
       case '/connect':
         return MaterialPageRoute(builder: (_)=>ConnectRoute(arg: args));
       default:
