@@ -14,8 +14,10 @@ class ConnectRoute extends StatefulWidget{
 
 class ConnectRouteState extends State<ConnectRoute>{
 
-  BluetoothDevice espDevice;
+  //BluetoothDevice espDevice;
   BluetoothService serv;
+
+  List<Widget> foundServers = new List();
 
   @override
   Widget build(BuildContext context){
@@ -35,15 +37,28 @@ class ConnectRouteState extends State<ConnectRoute>{
                 }
               ),
 
-              RaisedButton(
-                child: Text('Connect to esp (temporary)'),
-                onPressed: () async{
-                  await bleConnect();
-                  await bleGetService();
-                  await bleGetCharacteristics();
-                  Navigator.of(context).pop();
-                  //bleGetService();
-                }
+              // RaisedButton(
+              //   child: Text('Connect to esp (temporary)'),
+              //   onPressed: () async{
+              //     await bleConnect();
+              //     await bleGetService();
+              //     await bleGetCharacteristics();
+              //     Navigator.of(context).pop();
+              //     //bleGetService();
+              //   }
+              // ),
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.all(8),
+                  itemCount: foundServers.length,
+                  itemBuilder: (BuildContext context, int index){
+                    return Container(
+                      height: 50,
+                      margin : EdgeInsets.all(2),
+                      child: foundServers[index],
+                    );
+                  }
+                )
               )
             ]
           )
@@ -60,26 +75,31 @@ class ConnectRouteState extends State<ConnectRoute>{
       for (ScanResult r in results) {
         print('${r.device.name} found! rssi: ${r.rssi}');
 
-        if(r.device.name == 'ESP'){
-          this.espDevice = r.device;
-          print('Set esp device!');
-        }
+        setState((){
+          foundServers.add(FoundServer(name: r.device.name, device: r.device, mainConnect: this,));
+        });
+
+        // if(r.device.name == 'ESP'){
+        //   this.espDevice = r.device;
+        //   print('Set esp device!');
+        // }
       }
     });
 
     HomeRoute.flutterBlue.stopScan();
+
   }
 
-  Future<void> bleConnect() async{
+  Future<void> bleConnect(BluetoothDevice device) async{
 
-    var ret = await this.espDevice.connect(timeout: Duration(seconds: 10) ,autoConnect: false);
-    this.widget.arg.setConnectionFunction(espDevice);
+    var ret = await device.connect(timeout: Duration(seconds: 10) ,autoConnect: false);
+    this.widget.arg.setConnectionFunction(device);
     return ret;
   }
 
-  Future<void> bleGetService() async{
+  Future<void> bleGetService(BluetoothDevice device) async{
 
-    List<BluetoothService> services = await this.espDevice.discoverServices();
+    List<BluetoothService> services = await device.discoverServices();
     services.forEach((service){
       if(service.uuid.toString() == 'c6f2d9e3-49e7-4125-9014-bfc6d669ff00'){
         print('Service UUID found');
@@ -113,5 +133,35 @@ class ConnectRouteState extends State<ConnectRoute>{
     this.widget.arg.setCharacteristicsFunction(r,w);
 
     return;
+  }
+}
+
+class FoundServer extends StatelessWidget {
+  const FoundServer({
+    Key key,
+    this.name ,
+    this.device,
+    this.mainConnect
+  }) : super(key: key);
+
+  final String name;
+  final BluetoothDevice device;
+  final ConnectRouteState mainConnect;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Text(name),
+        RaisedButton(
+          child: Text("Connect"),
+          onPressed: () async {
+            mainConnect.bleConnect(device);
+            mainConnect.bleGetService(device);
+            mainConnect.bleGetCharacteristics();
+          }
+        )
+      ],
+    );
   }
 }
