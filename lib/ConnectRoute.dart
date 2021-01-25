@@ -167,6 +167,7 @@ class FoundServer extends StatelessWidget {
     return Row(
       children: [
         Text(name),
+        Spacer(),
         RaisedButton(
           child: Text("Connect"),
           onPressed: () async {
