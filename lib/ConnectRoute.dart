@@ -81,9 +81,16 @@ class ConnectRouteState extends State<ConnectRoute>{
           continue;
         }
 
-        foundNames.add(r.device.name);
+        String sname = r.device.name;
+
+        foundNames.add(sname);
+
+        if(sname.isEmpty){
+          sname = "<Unnamed>";
+        }
+
         setState((){
-          foundServers.add(FoundServer(name: r.device.name, device: r.device, mainConnect: this,));
+          foundServers.add(FoundServer(name: sname,device: r.device, mainConnect: this,));
         });
 
         // if(r.device.name == 'ESP'){
