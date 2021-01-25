@@ -69,12 +69,19 @@ class ConnectRouteState extends State<ConnectRoute>{
 
   void bleScan(){
 
+    List<String> foundNames = new List();
+
     HomeRoute.flutterBlue.startScan(timeout: Duration(seconds: 2));
 
     HomeRoute.flutterBlue.scanResults.listen((results) {
       for (ScanResult r in results) {
         print('${r.device.name} found! rssi: ${r.rssi}');
 
+        if(foundNames.contains(r.device.name)){
+          continue;
+        }
+
+        foundNames.add(r.device.name);
         setState((){
           foundServers.add(FoundServer(name: r.device.name, device: r.device, mainConnect: this,));
         });
@@ -156,9 +163,10 @@ class FoundServer extends StatelessWidget {
         RaisedButton(
           child: Text("Connect"),
           onPressed: () async {
-            mainConnect.bleConnect(device);
-            mainConnect.bleGetService(device);
-            mainConnect.bleGetCharacteristics();
+            await mainConnect.bleConnect(device);
+            await mainConnect.bleGetService(device);
+            await mainConnect.bleGetCharacteristics();
+            Navigator.of(mainConnect.context).pop();
           }
         )
       ],
