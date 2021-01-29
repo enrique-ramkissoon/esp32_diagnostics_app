@@ -71,11 +71,11 @@ class NetworkConfigState extends State<NetworkConfigRoute>{
                   List<int> ssidBytes = prefixSSID + utf8.encode(ssid);
                   List<int> pwBytes = prefixPW + utf8.encode(pw);
 
-                  this.widget.characteristics.write(ssidBytes);
+                  await this.widget.characteristics.write(ssidBytes);
 
                   await new Future.delayed(const Duration(milliseconds : 3000));
 
-                  this.widget.characteristics.write(pwBytes);
+                  await this.widget.characteristics.write(pwBytes);
 
                   await new Future.delayed(const Duration(milliseconds : 3000));
 
