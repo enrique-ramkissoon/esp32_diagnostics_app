@@ -63,7 +63,7 @@ class AdcRouteState extends State<AdcRoute>{
     return [
       new charts.Series<AdcDatum, int>(
         id: 'ID',
-        colorFn: (_, __) => charts.MaterialPalette.gray.shadeDefault,
+        colorFn: (_, __) => charts.MaterialPalette.green.shadeDefault,
         domainFn: (AdcDatum reading, _) => reading.id,
         measureFn: (AdcDatum reading, _) => reading.value,
         data: values,
@@ -75,7 +75,7 @@ class AdcRouteState extends State<AdcRoute>{
     return [
       new charts.Series<AdcDatum, int>(
         id: 'ID',
-        colorFn: (_, __) => charts.MaterialPalette.gray.shadeDefault,
+        colorFn: (_, __) => charts.MaterialPalette.green.shadeDefault,
         domainFn: (AdcDatum reading, _) => reading.id,
         measureFn: (AdcDatum reading, _) => reading.value,
         data: values,
@@ -130,7 +130,9 @@ class AdcRouteState extends State<AdcRoute>{
         },
 
         child: Scaffold(
-          appBar: AppBar(title: Text('ADC Graph')),
+          appBar: AppBar(title: Text('ADC Graph'),backgroundColor: Colors.grey[800],),
+
+          backgroundColor: Colors.grey[800],
 
           body: Center(
             child: Column(
@@ -138,7 +140,7 @@ class AdcRouteState extends State<AdcRoute>{
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Text(lastReading),
-                RaisedButton(child: Text('Start Graphing'), onPressed: () async {
+                RaisedButton.icon(icon: Icon(Icons.play_arrow, color: Colors.green[600]), label: Text(""),color: Colors.grey[800], onPressed: () async {
                   
                   //Reset view to last 50 values before resuming (if the viewport was shifted). This condition is false at the start of graphing
                   if(historyValues.length > 50){
@@ -265,6 +267,7 @@ class AdcRouteState extends State<AdcRoute>{
                     child: charts.LineChart(
                       graphSeries,
                       animate: false,
+                      
 
                       behaviors: [
                         // Add the sliding viewport behavior to have the viewport center on the
@@ -278,7 +281,20 @@ class AdcRouteState extends State<AdcRoute>{
                       
                       //domainAxis: can be removed for a graph with smoother transitions, but significanly reduced domain ticks
                       domainAxis: new charts.NumericAxisSpec(
-                        tickProviderSpec: charts.BasicNumericTickProviderSpec(desiredTickCount: 0, desiredMaxTickCount: 1, desiredMinTickCount: 0, zeroBound: false)
+                        tickProviderSpec: charts.BasicNumericTickProviderSpec(desiredTickCount: 0, desiredMaxTickCount: 1, desiredMinTickCount: 0, zeroBound: false,),
+                        renderSpec: new charts.GridlineRendererSpec(
+                          labelStyle: new charts.TextStyleSpec(
+                            color: charts.MaterialPalette.white
+                          )
+                        )
+                      ),
+
+                      primaryMeasureAxis: new charts.NumericAxisSpec(
+                        renderSpec: new charts.GridlineRendererSpec(
+                          labelStyle: new charts.TextStyleSpec(
+                            color: charts.MaterialPalette.white
+                          )
+                        ) 
                       ),
                     )
                   )
