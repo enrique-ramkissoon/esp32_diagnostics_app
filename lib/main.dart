@@ -72,7 +72,17 @@ class HomeRouteState extends State<HomeRoute>{
                 children: <Widget>[
                   
                   RaisedButton(
-                    child: Text('Text Dump'),
+                    child: Column(
+                      children: [
+                        Icon(
+                          Icons.format_align_justify,
+                          color: Colors.green[600],
+                          size: 150,
+                        ),
+
+                        Text("Text Dump", style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold)),
+                      ]
+                    ),
 
                     color: Colors.grey[800],
                     splashColor: Colors.grey[850],
@@ -83,18 +93,37 @@ class HomeRouteState extends State<HomeRoute>{
                   ),
 
                   RaisedButton(
-                    child: Text('ADC Graph'),
+                    child: Column(
+                      children: [
+                        Icon(
+                          Icons.timeline,
+                          color: Colors.green[600],
+                          size: 150,
+                        ),
+
+                        Text("ADC Graph", style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold)),
+                      ]
+                    ),
 
                     color: Colors.grey[800],
                     splashColor: Colors.grey[850],
-
                     onPressed: (){
                       Navigator.of(context).pushNamed('/adc',arguments: Characteristics(readChar,writeChar));
                     }
                   ),
 
                   RaisedButton(
-                    child: Text('State Info'),
+                    child: Column(
+                      children: [
+                        Icon(
+                          Icons.history,
+                          color: Colors.green[600],
+                          size: 150,
+                        ),
+
+                        Text("State", style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold)),
+                      ]
+                    ),
 
                     color: Colors.grey[800],
                     splashColor: Colors.grey[850],
@@ -105,7 +134,17 @@ class HomeRouteState extends State<HomeRoute>{
                   ),
 
                   RaisedButton(
-                    child: Text('Stats'),
+                    child: Column(
+                      children: [
+                        Icon(
+                          Icons.pie_chart,
+                          color: Colors.green[600],
+                          size: 150,
+                        ),
+
+                        Text("Stats", style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold)),
+                      ]
+                    ),
 
                     color: Colors.grey[800],
                     splashColor: Colors.grey[850],
@@ -116,7 +155,17 @@ class HomeRouteState extends State<HomeRoute>{
                   ),
 
                   RaisedButton(
-                    child: Text('Commands'),
+                    child: Column(
+                      children: [
+                        Icon(
+                          Icons.computer,
+                          color: Colors.green[600],
+                          size: 150,
+                        ),
+
+                        Text("Commands", style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold)),
+                      ]
+                    ),
 
                     color: Colors.grey[800],
                     splashColor: Colors.grey[850],
@@ -127,7 +176,17 @@ class HomeRouteState extends State<HomeRoute>{
                   ),
 
                   RaisedButton(
-                    child: Text('Network'),
+                    child: Column(
+                      children: [
+                        Icon(
+                          Icons.wifi,
+                          color: Colors.green[600],
+                          size: 150,
+                        ),
+
+                        Text("Network", style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold)),
+                      ]
+                    ),
 
                     color: Colors.grey[800],
                     splashColor: Colors.grey[850],
@@ -138,7 +197,17 @@ class HomeRouteState extends State<HomeRoute>{
                   ),
 
                   RaisedButton(
-                    child: Text('Calibrate'),
+                    child: Column(
+                      children: [
+                        Icon(
+                          Icons.location_searching,
+                          color: Colors.green[600],
+                          size: 150,
+                        ),
+
+                        Text("Calibrate", style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold)),
+                      ]
+                    ),
 
                     color: Colors.grey[800],
                     splashColor: Colors.grey[850],
