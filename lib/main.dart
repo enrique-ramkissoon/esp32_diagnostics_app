@@ -56,66 +56,100 @@ class HomeRouteState extends State<HomeRoute>{
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
-        title: Text('ESP32 Diagnostics App')
+        title: Text('ESP32 Diagnostics App'),
+        backgroundColor: Colors.grey[800],
       ),
 
       backgroundColor: Colors.grey[800],
 
       body: Center(
         child: Column(
-          children: <Widget>[
-            
-            RaisedButton(
-              child: Text('Text Dump'),
+          children: [
+            Expanded(
+              child: GridView.count(
+                crossAxisCount: 2,
 
-              onPressed: (){
-                Navigator.of(context).pushNamed('/textdump',arguments: Characteristics(readChar,writeChar));
-              }
-            ),
+                children: <Widget>[
+                  
+                  RaisedButton(
+                    child: Text('Text Dump'),
 
-            RaisedButton(
-              child: Text('ADC Graph'),
-              onPressed: (){
-                Navigator.of(context).pushNamed('/adc',arguments: Characteristics(readChar,writeChar));
-              }
-            ),
+                    color: Colors.grey[800],
+                    splashColor: Colors.grey[850],
 
-            RaisedButton(
-              child: Text('State Info'),
-              onPressed: (){
-                Navigator.of(context).pushNamed('/state',arguments: Characteristics(readChar,writeChar));
-              }
-            ),
+                    onPressed: (){
+                      Navigator.of(context).pushNamed('/textdump',arguments: Characteristics(readChar,writeChar));
+                    }
+                  ),
 
-            RaisedButton(
-              child: Text('Stats'),
-              onPressed: (){
-                Navigator.of(context).pushNamed('/stats',arguments: Characteristics(readChar,writeChar));
-              }
-            ),
+                  RaisedButton(
+                    child: Text('ADC Graph'),
 
-            RaisedButton(
-              child: Text('Commands'),
-              onPressed: (){
-                Navigator.of(context).pushNamed('/cmds',arguments: Characteristics(readChar,writeChar));
-              }
-            ),
+                    color: Colors.grey[800],
+                    splashColor: Colors.grey[850],
 
-            RaisedButton(
-              child: Text('Network'),
-              onPressed: (){
-                Navigator.of(context).pushNamed('/net',arguments: Characteristics(readChar,writeChar));
-              }
-            ),
+                    onPressed: (){
+                      Navigator.of(context).pushNamed('/adc',arguments: Characteristics(readChar,writeChar));
+                    }
+                  ),
 
-            RaisedButton(
-              child: Text('Calibrate'),
-              onPressed: (){
-                Navigator.of(context).pushNamed('/calibrate',arguments: Characteristics(readChar,writeChar));
-              }
+                  RaisedButton(
+                    child: Text('State Info'),
+
+                    color: Colors.grey[800],
+                    splashColor: Colors.grey[850],
+                    
+                    onPressed: (){
+                      Navigator.of(context).pushNamed('/state',arguments: Characteristics(readChar,writeChar));
+                    }
+                  ),
+
+                  RaisedButton(
+                    child: Text('Stats'),
+
+                    color: Colors.grey[800],
+                    splashColor: Colors.grey[850],
+                    
+                    onPressed: (){
+                      Navigator.of(context).pushNamed('/stats',arguments: Characteristics(readChar,writeChar));
+                    }
+                  ),
+
+                  RaisedButton(
+                    child: Text('Commands'),
+
+                    color: Colors.grey[800],
+                    splashColor: Colors.grey[850],
+                    
+                    onPressed: (){
+                      Navigator.of(context).pushNamed('/cmds',arguments: Characteristics(readChar,writeChar));
+                    }
+                  ),
+
+                  RaisedButton(
+                    child: Text('Network'),
+
+                    color: Colors.grey[800],
+                    splashColor: Colors.grey[850],
+                    
+                    onPressed: (){
+                      Navigator.of(context).pushNamed('/net',arguments: Characteristics(readChar,writeChar));
+                    }
+                  ),
+
+                  RaisedButton(
+                    child: Text('Calibrate'),
+
+                    color: Colors.grey[800],
+                    splashColor: Colors.grey[850],
+                    
+                    onPressed: (){
+                      Navigator.of(context).pushNamed('/calibrate',arguments: Characteristics(readChar,writeChar));
+                    }
+                  ),
+                ]
+              ),
             ),
-            
-            Spacer(),
 
             RaisedButton(
               child: Column(
@@ -133,7 +167,7 @@ class HomeRouteState extends State<HomeRoute>{
                 Navigator.of(context).pushNamed('/connect',arguments: ConnectRouteArgs(setConnectionInfo,setConnectionService,setConnectionChars));
               }
             )
-          ]
+          ],
         )
       )
     );
