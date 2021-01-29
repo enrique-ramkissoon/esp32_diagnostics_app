@@ -59,6 +59,8 @@ class HomeRouteState extends State<HomeRoute>{
         title: Text('ESP32 Diagnostics App')
       ),
 
+      backgroundColor: Colors.grey[800],
+
       body: Center(
         child: Column(
           children: <Widget>[
@@ -122,6 +124,10 @@ class HomeRouteState extends State<HomeRoute>{
                   Text('$connectButtonDisplayDevice',style: TextStyle(fontSize: 9))
                 ]
               ),
+
+              color: Colors.lightGreen[800],
+              splashColor: Colors.green[800],
+              textColor: Colors.white,
 
               onPressed: (){
                 Navigator.of(context).pushNamed('/connect',arguments: ConnectRouteArgs(setConnectionInfo,setConnectionService,setConnectionChars));
