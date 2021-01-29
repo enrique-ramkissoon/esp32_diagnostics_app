@@ -18,6 +18,9 @@ class NetworkConfigState extends State<NetworkConfigRoute>{
   TextEditingController ssidController = new TextEditingController();
   TextEditingController pwController = new TextEditingController();
 
+  String rssi = "";
+  String ch = "";
+
   @override
   void initState(){
     super.initState();
@@ -73,8 +76,28 @@ class NetworkConfigState extends State<NetworkConfigRoute>{
                   await new Future.delayed(const Duration(milliseconds : 3000));
 
                   this.widget.characteristics.write(pwBytes);
+
+                  await new Future.delayed(const Duration(milliseconds : 3000));
+
+                  List<int> bleRead = await this.widget.characteristics.rc.read();
+
+                  String readStr = String.fromCharCodes(bleRead);
+                  String readStrFixed = readStr.substring(0,readStr.indexOf(String.fromCharCode(0)));
+
+                  String rel_ssi = readStrFixed.substring(0,readStr.indexOf('|'));
+                  String wifi_ch = readStrFixed.substring(readStr.indexOf('|')+1);
+
+                  setState(() {
+                    rssi = rel_ssi;
+                    ch = wifi_ch;
+                  });
+                  
                 },
-              )
+              ),
+
+              Text(ssidController.text),
+              Text("RSSI: " + rssi),
+              Text("Channel: " + ch),
             ],
           )
         )
