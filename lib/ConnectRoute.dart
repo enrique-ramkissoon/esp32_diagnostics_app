@@ -23,12 +23,18 @@ class ConnectRouteState extends State<ConnectRoute>{
   Widget build(BuildContext context){
     return(
       Scaffold(
-        appBar: AppBar(title: Text('Connect to Device')),
+        appBar: AppBar(title: Text('Connect to Device'), backgroundColor: Colors.grey[800],),
+
+        backgroundColor: Colors.grey[800],
 
         body: Center(
           child: Column(
             children: <Widget>[
               RaisedButton(
+                color: Colors.lightGreen[800],
+                splashColor: Colors.green[800],
+                textColor: Colors.white,
+
                 child: Text('Scan'),
                 onPressed: (){
                   //this.widget.setConnectedFunction('hELLO');
@@ -166,10 +172,15 @@ class FoundServer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text(name),
+        Text(name,style: TextStyle(color: Colors.white)),
         Spacer(),
         RaisedButton(
           child: Text("Connect"),
+
+          color: Colors.lightGreen[800],
+          splashColor: Colors.green[800],
+          textColor: Colors.white,
+
           onPressed: () async {
             await mainConnect.bleConnect(device);
             await mainConnect.bleGetService(device);
