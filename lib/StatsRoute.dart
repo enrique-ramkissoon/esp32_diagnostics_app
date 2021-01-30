@@ -66,6 +66,10 @@ class StatsRouteState extends State<StatsRoute>{
         data: cpuData,
         // Set a label accessor to control the text of the arc label.
         labelAccessorFn: (StatsDatum stat, _) => (stat.task + ' ' + stat.cpu.toStringAsFixed(1) + '%'),
+
+        colorFn: (_,index){
+          return charts.MaterialPalette.green.makeShades(20)[index];
+        }
       )
     ];
   }
@@ -202,7 +206,7 @@ class StatsRouteState extends State<StatsRoute>{
                       }
                     }
 
-                    cpuUtil = 100 - (100*( ((double.parse(runtimes[idleIndex+1]))) / (double.parse(runtimes[0])) ));
+                    cpuUtil = 100 - (100*( ((double.parse(runtimes[idleIndex+1], (_){return 0;}))) / (double.parse(runtimes[0], (_){return 0;})) ));
                     freeHeap = int.parse(stacks[0]);
 
                     tableRows.clear();
@@ -212,7 +216,7 @@ class StatsRouteState extends State<StatsRoute>{
 
                     for(int i=0;i<taskNames.length;i++){
 
-                      double taskCpuUtil = 100* ((double.parse(runtimes[i+1]))/(double.parse(runtimes[0])));
+                      double taskCpuUtil = 100* ((double.parse(runtimes[i+1], (_){return 0;}))/(double.parse(runtimes[0], (_){return 0;})));
                       double taskRuntimeMs = int.parse(runtimes[i+1]) / 1000;
 
                       tableRows.add(new DataRow(cells:[DataCell(Text(taskNames[i], style: TextStyle(color: Colors.white))),
@@ -277,9 +281,10 @@ class StatsRouteState extends State<StatsRoute>{
                     animate: false,
                     defaultRenderer: new charts.ArcRendererConfig(arcRendererDecorators: [
                         new charts.ArcLabelDecorator(
-                            outsideLabelStyleSpec: new charts.TextStyleSpec(fontSize: 10),
+                            outsideLabelStyleSpec: new charts.TextStyleSpec(fontSize: 10, color: charts.MaterialPalette.white),
                             labelPosition: charts.ArcLabelPosition.outside,
-                        )
+                            leaderLineColor: charts.MaterialPalette.white,
+                        ),
                       ]
                     )
                   )
