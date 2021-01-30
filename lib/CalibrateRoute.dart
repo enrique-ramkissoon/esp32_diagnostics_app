@@ -41,19 +41,22 @@ class CalibrateState extends State<CalibrateRoute>{
       },
 
       child: Scaffold(
-        appBar: new AppBar(title: Text("Calibrate")),
+        appBar: new AppBar(title: Text("Calibrate"),backgroundColor: Colors.grey[800],),
+
+        backgroundColor: Colors.grey[800],
 
         body: Center(
           child: Column(
             children: [
-              Text('Standard Mass 1: '), 
-              TextField(controller: sm1Controller,),
-              Text('Standard Mass 2: '), 
-              TextField(controller: sm2Controller,),
+              Text('Standard Mass 1: ', style: TextStyle(color: Colors.white)), 
+              TextField(controller: sm1Controller, cursorColor: Colors.white, style: TextStyle(color: Colors.white)),
+              Text('Standard Mass 2: ', style: TextStyle(color: Colors.white)), 
+              TextField(controller: sm2Controller, cursorColor: Colors.white, style: TextStyle(color: Colors.white)),
 
 
               RaisedButton(
-                child: Text('Start Calibration Process'),
+                child: Text('Start Calibration Process', style: TextStyle(color: Colors.white)),
+                color: Colors.green[600],
                 onPressed: () async {
                   await step1();
                   
@@ -108,17 +111,18 @@ class CalibrateState extends State<CalibrateRoute>{
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Step 1'),
+          backgroundColor: Colors.green[800],
+          title: Text('Step 1', style: TextStyle(color: Colors.white)),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text('Place Standard Mass 1 on the Scale'),
+                Text('Place Standard Mass 1 on the Scale', style: TextStyle(color: Colors.white)),
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Next'),
+              child: Text('Next', style: TextStyle(color: Colors.white)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -136,17 +140,20 @@ class CalibrateState extends State<CalibrateRoute>{
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Step 2'),
+
+          backgroundColor: Colors.green[800],
+
+          title: Text('Step 2', style: TextStyle(color: Colors.white)),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text('Place Standard Mass 2 on the Scale'),
+                Text('Place Standard Mass 2 on the Scale', style: TextStyle(color: Colors.white)),
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Next'),
+              child: Text('Next', style: TextStyle(color: Colors.white)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -163,24 +170,27 @@ class CalibrateState extends State<CalibrateRoute>{
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Step 3'),
+
+          backgroundColor: Colors.green[800],
+
+          title: Text('Step 3', style: TextStyle(color: Colors.white)),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text('Calculated Calibration Factor = ' + cf.toString()),
+                Text('Calculated Calibration Factor = ' + cf.toString(), style: TextStyle(color: Colors.white)),
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Calibrate'),
+              child: Text('Calibrate', style: TextStyle(color: Colors.white)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
 
             TextButton(
-              child: Text('Cancel'),
+              child: Text('Cancel', style: TextStyle(color: Colors.white)),
               onPressed: () {
                 calibrationFactor = -1;
                 Navigator.of(context).pop();
