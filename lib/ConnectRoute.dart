@@ -112,9 +112,14 @@ class ConnectRouteState extends State<ConnectRoute>{
 
   Future<void> bleConnect(BluetoothDevice device) async{
 
-    var ret = await device.connect(timeout: Duration(seconds: 10) ,autoConnect: false);
+    try{
+      var ret = await device.connect(timeout: Duration(seconds: 10) ,autoConnect: false);
+    }catch(TimeoutException){
+      print("Connection Timed out");
+      Navigator.pop(context);
+    }
     this.widget.arg.setConnectionFunction(device);
-    return ret;
+    return;
   }
 
   Future<void> bleGetService(BluetoothDevice device) async{
