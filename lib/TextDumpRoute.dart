@@ -37,13 +37,17 @@ class TextRouteState extends State<TextDumpRoute>{
       },
 
       child: Scaffold(
-        appBar: new AppBar(title: Text("Text Dump")),
+        appBar: new AppBar(title: Text("Text Dump"),backgroundColor: Colors.grey[800],),
+
+        backgroundColor: Colors.grey[800],
 
         body: Center(
           child: Column(
             children: [
               RaisedButton(
-                child: Text('Stream Logs'),
+                child: Text('Stream Logs',style: TextStyle(color: Colors.white)),
+
+                color: Colors.green[600],
 
                 onPressed: () async {
                   running = true;
@@ -78,7 +82,7 @@ class TextRouteState extends State<TextDumpRoute>{
                 flex: 1,
                 child: SingleChildScrollView(
                   scrollDirection: Axis.vertical,
-                  child: Text(text),
+                  child: Text(text, style: TextStyle(color: Colors.white)),
                 )
               )
             ],
