@@ -15,6 +15,10 @@ class StateRoute extends StatefulWidget{
 class StateRouteState extends State<StateRoute>{
   String text = '';
 
+  List<Text> macs = new List();
+  List<Text> states = new List();
+  List<Widget> tiles = new List();
+
   @override
   void initState(){
     super.initState();
@@ -66,7 +70,7 @@ class StateRouteState extends State<StateRoute>{
                       readingStr = readingStr + bleReadList[conn+3].toRadixString(16) + ":";
                       readingStr = readingStr + bleReadList[conn+4].toRadixString(16) + ":";
                       readingStr = readingStr + bleReadList[conn+5].toRadixString(16) + ":";
-                      readingStr = readingStr + bleReadList[conn+6].toRadixString(16) + "\n";
+                      readingStr = readingStr + bleReadList[conn+6].toRadixString(16) + "|";
 
                       conn+=7;
 
@@ -82,7 +86,7 @@ class StateRouteState extends State<StateRoute>{
 
                       int duration = (dur1*255) + dur2;
 
-                      readingStr  = readingStr + "Duration: " + duration.toString() + "s\n\n";
+                      readingStr  = readingStr + "Duration: " + duration.toString() + "s!!";
 
                       conn+=2;
                       continue;
@@ -141,20 +145,81 @@ class StateRouteState extends State<StateRoute>{
                   setState(() {
                     text = text + readingStr;
                   });
+
+                  //text contains the full state info. connections separated by ||
+                  //the following code extracts this data into discrete lists
+
+                  String macStr;
+                  String actionsStr;
+
+                  for(int iExt=0;iExt<text.length;){
+
+                    print("iExt = "+iExt.toString());
+
+                    if(text.indexOf("|",iExt) != -1){
+                      macStr = text.substring(iExt,text.indexOf("|",iExt));
+                      iExt = text.indexOf("|",iExt) + 1;
+
+                      if(text.indexOf("!!",iExt) != -1){
+                        actionsStr = text.substring(iExt,text.indexOf("!!",iExt));
+                        iExt = text.indexOf("!!",iExt) + 2;
+
+                        setState((){
+                          tiles.add(ConnectionHistory(mac: macStr, hist: actionsStr));
+                        });
+
+                      }else{
+                        actionsStr = text.substring(iExt);
+
+                        setState((){
+                          tiles.add(ConnectionHistory(mac: macStr, hist: actionsStr));
+                        });
+
+                        break;
+                      }
+                    }
+                  }
                 },
               ),
 
               Expanded(
-                flex: 1,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Text(text),
+                child: ListView.builder(
+                  padding: const EdgeInsets.all(8),
+                  itemCount: tiles.length,
+                  itemBuilder: (BuildContext context, int index){
+                    return Container(
+                      height: 200,
+                      margin : EdgeInsets.all(2),
+                      child: tiles[index],
+                    );
+                  }
                 )
               )
             ],
           )
         )
       )
+    );
+  }
+}
+
+class ConnectionHistory extends StatelessWidget{
+  const ConnectionHistory({
+    Key key,
+    this.mac,
+    this.hist,
+  }) : super(key: key);
+
+  final String mac;
+  final String hist;
+
+  @override
+  Widget build(BuildContext context) {
+    return ExpansionTile(
+      title: Text(mac),
+      children: [
+        Text(hist),
+      ],
     );
   }
 }
