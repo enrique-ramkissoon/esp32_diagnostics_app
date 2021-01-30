@@ -29,11 +29,21 @@ class TextRouteState extends State<TextDumpRoute>{
   Widget build(BuildContext context){
     return WillPopScope(
       onWillPop: () async {
-        setState((){
-          running = false;
-        });
 
-        return false;
+        if(running == true){
+          setState((){
+            running = false;
+          });
+
+          return false;
+        }else{
+          List<int> stop = new List(1);
+          stop[0] = 0x00;
+
+          await this.widget.characteristics.write(stop);
+
+          return true;
+        }
       },
 
       child: Scaffold(
