@@ -29,13 +29,17 @@ class CommandsRouteState extends State<CommandsRoute>{
       },
 
       child: Scaffold(
-        appBar: new AppBar(title: Text("Commands")),
+        appBar: new AppBar(title: Text("Commands"), backgroundColor: Colors.grey[800],),
+
+        backgroundColor: Colors.grey[800],
 
         body: Center(
           child: Column(
             children: [
               RaisedButton(
-                child: Text('Verify HX711 Connection'),
+                child: Text('Verify HX711 Connection', style: TextStyle(color: Colors.white)),
+
+                color: Colors.green[600],
 
                 onPressed: () async {
                   List<int> cmd = new List(1);
@@ -59,10 +63,12 @@ class CommandsRouteState extends State<CommandsRoute>{
                 },
               ),
 
-              Text(verifyConnectResult),
+              Text(verifyConnectResult, style: TextStyle(color: Colors.white)),
 
               RaisedButton(
-                child: Text('Verify HX711 Sample Rate'),
+                child: Text('Verify HX711 Sample Rate', style: TextStyle(color: Colors.white)),
+
+                color: Colors.green,
 
                 onPressed: () async {
                   List<int> cmd = new List(1);
@@ -91,7 +97,7 @@ class CommandsRouteState extends State<CommandsRoute>{
                 },
               ),
 
-              Text(verifySampleRateResult),
+              Text(verifySampleRateResult, style: TextStyle(color: Colors.white)),
             ],
           )
         )
