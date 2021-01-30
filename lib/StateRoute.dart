@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:esp32_diagnostics_app/main.dart';
 
 class StateRoute extends StatefulWidget{
@@ -40,13 +39,17 @@ class StateRouteState extends State<StateRoute>{
       },
 
       child: Scaffold(
-        appBar: new AppBar(title: Text("State Information")),
+        appBar: new AppBar(title: Text("State Information"),backgroundColor: Colors.grey[800],),
+
+        backgroundColor: Colors.grey[800],
 
         body: Center(
           child: Column(
             children: [
               RaisedButton(
-                child: Text('Download State'),
+                child: Text('Download State',style: TextStyle(color: Colors.white)),
+
+                color: Colors.green[600],
 
                 onPressed: () async {
                   List<int> bleReadList = await this.widget.characteristics.rc.read();
@@ -212,9 +215,10 @@ class ConnectionHistory extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
-      title: Text(mac),
+      title: Text(mac,style: TextStyle(color: Colors.white)),
+      backgroundColor: Colors.green[600],
       children: [
-        Text(hist),
+        Align(child:Text(hist,style: TextStyle(color: Colors.white, )), alignment: Alignment.topLeft,),
       ],
     );
   }
