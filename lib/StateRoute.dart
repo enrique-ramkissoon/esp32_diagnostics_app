@@ -187,11 +187,7 @@ class StateRouteState extends State<StateRoute>{
                   padding: const EdgeInsets.all(8),
                   itemCount: tiles.length,
                   itemBuilder: (BuildContext context, int index){
-                    return Container(
-                      height: 200,
-                      margin : EdgeInsets.all(2),
-                      child: tiles[index],
-                    );
+                    return tiles[index];
                   }
                 )
               )
