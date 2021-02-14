@@ -66,6 +66,10 @@ class StatsRouteState extends State<StatsRoute>{
         data: cpuData,
         // Set a label accessor to control the text of the arc label.
         labelAccessorFn: (StatsDatum stat, _) => (stat.task + ' ' + stat.cpu.toStringAsFixed(1) + '%'),
+
+        colorFn: (_,index){
+          return charts.MaterialPalette.green.makeShades(20)[index];
+        }
       )
     ];
   }
@@ -83,14 +87,18 @@ class StatsRouteState extends State<StatsRoute>{
       },
 
       child: Scaffold(
-        appBar: new AppBar(title: Text("ESP32 Statistics")),
+        appBar: new AppBar(title: Text("ESP32 Statistics"),backgroundColor: Colors.grey[800],),
+
+        backgroundColor: Colors.grey[800],
 
         body: Center(
           child: ListView(
             scrollDirection: Axis.vertical,
             children: [
               RaisedButton(
-                child: Text('Download Statistics'),
+                child: Text('Download Statistics',style: TextStyle(color: Colors.white)),
+
+                color: Colors.green[600],
 
                 onPressed: () async {
 
@@ -198,7 +206,7 @@ class StatsRouteState extends State<StatsRoute>{
                       }
                     }
 
-                    cpuUtil = 100 - (100*( ((double.parse(runtimes[idleIndex+1]))) / (double.parse(runtimes[0])) ));
+                    cpuUtil = 100 - (100*( ((double.parse(runtimes[idleIndex+1], (_){return 0;}))) / (double.parse(runtimes[0], (_){return 0;})) ));
                     freeHeap = int.parse(stacks[0]);
 
                     tableRows.clear();
@@ -208,10 +216,13 @@ class StatsRouteState extends State<StatsRoute>{
 
                     for(int i=0;i<taskNames.length;i++){
 
-                      double taskCpuUtil = 100* ((double.parse(runtimes[i+1]))/(double.parse(runtimes[0])));
+                      double taskCpuUtil = 100* ((double.parse(runtimes[i+1], (_){return 0;}))/(double.parse(runtimes[0], (_){return 0;})));
                       double taskRuntimeMs = int.parse(runtimes[i+1]) / 1000;
 
-                      tableRows.add(new DataRow(cells:[DataCell(Text(taskNames[i])),DataCell(Text(taskRuntimeMs.toStringAsFixed(0))),DataCell(Text(stacks[i+1])), DataCell(Text(taskCpuUtil.toStringAsFixed(2)))]));
+                      tableRows.add(new DataRow(cells:[DataCell(Text(taskNames[i], style: TextStyle(color: Colors.white))),
+                      DataCell(Text(taskRuntimeMs.toStringAsFixed(0), style: TextStyle(color: Colors.white))),
+                      DataCell(Text(stacks[i+1], style: TextStyle(color: Colors.white))), 
+                      DataCell(Text(taskCpuUtil.toStringAsFixed(2), style: TextStyle(color: Colors.white)))]));
 
                       if(taskNames[i] != "IDLE")
                       {
@@ -225,32 +236,40 @@ class StatsRouteState extends State<StatsRoute>{
                 },
               ),
 
-              Text("CPU Utilization: " + cpuUtil.toString(), textAlign: TextAlign.left),
-              Text("Heap Available: " + freeHeap.toString(), textAlign: TextAlign.left),
+              Text("CPU Utilization: " + cpuUtil.toString(), textAlign: TextAlign.left, style: TextStyle(color: Colors.white)),
+              Text("Heap Available: " + freeHeap.toString(), textAlign: TextAlign.left, style: TextStyle(color: Colors.white)),
 
-              Text('Tasks Runtime and CPU Utilization'),
+              Text('Tasks Runtime and CPU Utilization', style: TextStyle(color: Colors.white)),
 
               DataTable(
                 columnSpacing: 2,
                 columns: [
                   DataColumn(
-                    label: Text('Task',style: TextStyle(fontWeight: FontWeight.bold))
+                    label: Text('Task',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))
                   ),
 
                   DataColumn(
-                    label: Text('Run\nTime\n/ms',style: TextStyle(fontWeight: FontWeight.bold))
+                    label: Text('Run\nTime\n/ms',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))
                   ),
 
                   DataColumn(
-                    label: Text('Stack\nRemaining\n/bytes',style: TextStyle(fontWeight: FontWeight.bold))
+                    label: Text('Stack\nRemaining\n/bytes',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))
                   ),
 
                   DataColumn(
-                    label: Text('CPU\nUtilization\n/%',style: TextStyle(fontWeight: FontWeight.bold))
+                    label: Text('CPU\nUtilization\n/%',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))
                   ),
                 ],
 
-                rows: tableRows
+                rows: tableRows,
+
+                dataRowColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+
+                  if (states.contains(MaterialState.selected))
+                    return Colors.green[600];
+
+                  return Colors.grey[800];  // Use the default value.
+                }),
               ),
 
               Container(
@@ -262,9 +281,10 @@ class StatsRouteState extends State<StatsRoute>{
                     animate: false,
                     defaultRenderer: new charts.ArcRendererConfig(arcRendererDecorators: [
                         new charts.ArcLabelDecorator(
-                            outsideLabelStyleSpec: new charts.TextStyleSpec(fontSize: 10),
+                            outsideLabelStyleSpec: new charts.TextStyleSpec(fontSize: 10, color: charts.MaterialPalette.white),
                             labelPosition: charts.ArcLabelPosition.outside,
-                        )
+                            leaderLineColor: charts.MaterialPalette.white,
+                        ),
                       ]
                     )
                   )

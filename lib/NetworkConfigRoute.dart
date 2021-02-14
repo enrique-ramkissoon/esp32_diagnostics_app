@@ -42,19 +42,24 @@ class NetworkConfigState extends State<NetworkConfigRoute>{
       },
 
       child: Scaffold(
-        appBar: new AppBar(title: Text("Network Configuration")),
+        appBar: new AppBar(title: Text("Network Configuration"), backgroundColor: Colors.grey[800],),
+
+        backgroundColor: Colors.grey[800],
 
         body: Center(
           child: Column(
             children: [
-              Text('SSID: '), 
-              TextField(controller: ssidController,),
-              Text('Password: '), 
-              TextField(controller: pwController, obscureText: true,),
+              Text('SSID: ', style: TextStyle(color: Colors.white)), 
+              TextField(controller: ssidController,cursorColor: Colors.white, style: TextStyle(color: Colors.white)),
+              Text('Password: ', style: TextStyle(color: Colors.white)), 
+              TextField(controller: pwController, obscureText: true, cursorColor: Colors.white, style: TextStyle(color: Colors.white)),
 
 
               RaisedButton(
-                child: Text('Flash Credentials'),
+                child: Text('Flash Credentials', style: TextStyle(color: Colors.white)),
+
+                color: Colors.green[600],
+
                 onPressed: () async {
                   String ssid = ssidController.text;
                   String pw = pwController.text;
@@ -95,9 +100,17 @@ class NetworkConfigState extends State<NetworkConfigRoute>{
                 },
               ),
 
-              Text(ssidController.text),
-              Text("RSSI: " + rssi),
-              Text("Channel: " + ch),
+              Align(
+                alignment: Alignment.topLeft,
+                child: Column(
+                  children: [
+                    Text("Network Statistics", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                    Text(ssidController.text, style: TextStyle(color: Colors.white)),
+                    Text("RSSI: " + rssi, style: TextStyle(color: Colors.white)),
+                    Text("Channel: " + ch, style: TextStyle(color: Colors.white)),
+                  ]
+                )
+              ),
             ],
           )
         )

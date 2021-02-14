@@ -29,21 +29,35 @@ class TextRouteState extends State<TextDumpRoute>{
   Widget build(BuildContext context){
     return WillPopScope(
       onWillPop: () async {
-        setState((){
-          running = false;
-        });
 
-        return false;
+        if(running == true){
+          setState((){
+            running = false;
+          });
+
+          return false;
+        }else{
+          List<int> stop = new List(1);
+          stop[0] = 0x00;
+
+          await this.widget.characteristics.write(stop);
+
+          return true;
+        }
       },
 
       child: Scaffold(
-        appBar: new AppBar(title: Text("Text Dump")),
+        appBar: new AppBar(title: Text("Text Dump"),backgroundColor: Colors.grey[800],),
+
+        backgroundColor: Colors.grey[800],
 
         body: Center(
           child: Column(
             children: [
               RaisedButton(
-                child: Text('Stream Logs'),
+                child: Text('Stream Logs',style: TextStyle(color: Colors.white)),
+
+                color: Colors.green[600],
 
                 onPressed: () async {
                   running = true;
@@ -78,7 +92,7 @@ class TextRouteState extends State<TextDumpRoute>{
                 flex: 1,
                 child: SingleChildScrollView(
                   scrollDirection: Axis.vertical,
-                  child: Text(text),
+                  child: Text(text, style: TextStyle(color: Colors.white)),
                 )
               )
             ],
