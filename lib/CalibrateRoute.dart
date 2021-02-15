@@ -25,6 +25,7 @@ class CalibrateState extends State<CalibrateRoute>{
   String lastCalFacStr = '-1';
   
   bool running = false;
+  bool exitRequested = false;
 
   @override
   void initState(){
@@ -38,12 +39,20 @@ class CalibrateState extends State<CalibrateRoute>{
   Widget build(BuildContext context){
     return WillPopScope(
       onWillPop: () async {
-        List<int> stop = new List(1);
-        stop[0] = 0x00;
+        setState((){
+            if(running == false){
+              List<int> stop = new List(1);
+              stop[0] = 0x00;
 
-        this.widget.characteristics.write(stop);
+              this.widget.characteristics.write(stop);
+              Navigator.pop(context);
+            }else{
+              exitRequested = true;
+              running = false;
+            }
+          });
 
-        return true;
+          return false;
       },
 
       child: Scaffold(
@@ -237,6 +246,15 @@ class CalibrateState extends State<CalibrateRoute>{
           lastCalFacStr = members[1];
           lastMassStr = members[2];
         });
+      } else if(exitRequested == true){
+        List<int> stop = new List(1);
+        stop[0] = 0x00;
+
+        await this.widget.characteristics.write(stop);
+
+        Navigator.pop(context);
+
+        break;
       }
 
       await new Future.delayed(const Duration(milliseconds : 100));
