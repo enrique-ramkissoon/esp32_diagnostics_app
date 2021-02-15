@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
+import 'dart:async';
 
 import 'package:esp32_diagnostics_app/main.dart';
 
@@ -19,6 +20,14 @@ class CalibrateState extends State<CalibrateRoute>{
   TextEditingController sm2Controller = new TextEditingController();
 
   double calibrationFactor = -1;
+
+  double lastMass = -1;
+  double lastCalFac = -1;
+  double lastAdc = -1;
+  
+  String lastAdcStr = '-1';
+  String lastMassStr = '-1';
+  String lastCalFacStr = '-1';
 
   @override
   void initState(){
@@ -53,11 +62,19 @@ class CalibrateState extends State<CalibrateRoute>{
               Text('Standard Mass 2: ', style: TextStyle(color: Colors.white)), 
               TextField(controller: sm2Controller, cursorColor: Colors.white, style: TextStyle(color: Colors.white)),
 
+              RaisedButton(
+                child: Text('View Calibration Statistics', style: TextStyle(color: Colors.white)),
+                color: Colors.green[600],
+                onPressed: (){
+                  startReadTask();
+                }
+              ),
 
               RaisedButton(
                 child: Text('Start Calibration Process', style: TextStyle(color: Colors.white)),
                 color: Colors.green[600],
                 onPressed: () async {
+
                   await step1();
                   
                   List<int> bleRead1 = await this.widget.characteristics.rc.read();
@@ -96,7 +113,12 @@ class CalibrateState extends State<CalibrateRoute>{
                     this.widget.characteristics.write(cfChars);
                   }
                 },
-              )
+              ),
+
+              Spacer(),
+
+              Text("Mass, g = " + lastMassStr,style: TextStyle(color: Colors.white)),
+              Text("Sensitivity, g/ADC val = " + lastCalFacStr,style: TextStyle(color: Colors.white)),
             ],
           )
         )
@@ -200,5 +222,25 @@ class CalibrateState extends State<CalibrateRoute>{
         );
       },
     );
+  }
+
+  void startReadTask() async {
+    while(true){
+      List<int> bleRead = await this.widget.characteristics.rc.read();
+      String readStr = new String.fromCharCodes(bleRead);
+      String fixedStr = readStr.substring(0,readStr.indexOf(String.fromCharCode(0)));
+
+      print("BleRead = "+fixedStr);
+
+      List<String> members = fixedStr.split("|");
+
+      setState((){
+        lastAdcStr = members[0];
+        lastCalFacStr = members[1];
+        lastMassStr = members[2];
+      });
+
+      await new Future.delayed(const Duration(milliseconds : 100));
+    }
   }
 }
