@@ -53,6 +53,7 @@ class StateRouteState extends State<StateRoute>{
 
                 onPressed: () async {
                   List<int> bleReadList = await this.widget.characteristics.rc.read();
+                  print(bleReadList);
                   String readingStr = '';
 
                   for(int conn = 0;conn < bleReadList.length;){
@@ -133,6 +134,12 @@ class StateRouteState extends State<StateRoute>{
 
                     if(bleReadList[conn] == 0x06){
                       readingStr = readingStr + "Viewed Network Configuration,\n";
+                      conn+=1;
+                      continue;
+                    }
+
+                    if(bleReadList[conn] == 0x07){
+                      readingStr = readingStr + "Viewed Calibrate,\n";
                       conn+=1;
                       continue;
                     }
