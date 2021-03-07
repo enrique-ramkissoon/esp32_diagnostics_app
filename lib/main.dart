@@ -216,6 +216,30 @@ class HomeRouteState extends State<HomeRoute>{
                       Navigator.of(context).pushNamed('/calibrate',arguments: Characteristics(readChar,writeChar));
                     }
                   ),
+
+                  RaisedButton(
+                    child: Column(
+                      children: [
+                        Icon(
+                          Icons.exposure_zero,
+                          color: Colors.green[600],
+                          size: 150,
+                        ),
+
+                        Text("Tare", style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold)),
+                      ]
+                    ),
+
+                    color: Colors.grey[800],
+                    splashColor: Colors.grey[850],
+                    
+                    onPressed: () async {
+                      List<int> tare = new List(1);
+                      tare[0] = 0x08;
+
+                      await writeChar.write(tare);
+                    }
+                  )
                 ]
               ),
             ),
