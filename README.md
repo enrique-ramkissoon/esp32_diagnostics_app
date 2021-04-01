@@ -13,7 +13,8 @@ These instructions are intended for use on Linux.
 - Follow the install guide at: https://flutter.dev/docs/get-started/install
 
 ### Step 2 - Download Bluetooth Plugin
-- Navigate to the root repository directory and run the command: `flutter pub get`
+- This project utilizes the flutter_blue plugin (https://pub.dev/packages/flutter_blue).
+- To download this plugin, navigate to the root repository directory and run the command: `flutter pub get`
 
 ### Step 3 - Compile and Flash Application to Mobile Device
 - Connect a mobile device through a USB port
